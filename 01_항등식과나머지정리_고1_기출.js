@@ -1,11 +1,11 @@
 /**
- * 24_고1수학_1단원_신규아카이브 (통합본)
- * 문항 수: 32문항 (Part 1 ~ Part 6 병합)
- * 특징: 출처 명시, 논리 강화 해설, 실전 팁 포함
+ * 24_고1수학_1단원_신규아카이브 (v6.9.9 최종 마스터 병합본)
+ * 문항 수: 32문항
+ * 적용 매뉴얼: AP수학 무결성 해설 & 엔진 가동 매뉴얼 v1.3 [IRONCLAD]
+ * 해설 스타일: Logic-First (수식 주도형 전개, Logical Anchor 적용)
  */
 
-const questionBank = [
-    // Part 1: 다항식의 연산 및 기본 변형
+window.questionBank = [
     {
         id: 1,
         level: "중",
@@ -13,7 +13,7 @@ const questionBank = [
         content: "두 다항식 $A, B$에 대하여 $2A + B = 2x^2 + 5xy + 10y^2$, $A - B = x^2 + xy - 4y^2$일 때, 다항식 $A - 2B$를 구하시오. [2024 부영여고 1-1 중간 01번]",
         choices: ["$x^2 - 5y^2$", "$x^2 - 10y^2$", "$2x^2 + 5y^2$", "$x^2 + 2xy - y^2$", "$x^2 - 12y^2$"],
         answer: "②",
-        solution: "1단계: 두 식을 더하면 $3A = 3x^2 + 6xy + 6y^2 \\Rightarrow A = x^2 + 2xy + 2y^2$.\n2단계: $B = A - (x^2 + xy - 4y^2) = xy + 6y^2$.\n3단계: $A - 2B = (x^2 + 2xy + 2y^2) - 2(xy + 6y^2) = x^2 - 10y^2$.\n[실전 팁] 1번 문항이므로 특정 항($x^2$)의 계수만 먼저 확인하여 속도를 높이세요."
+        solution: "$(1)\\ 2A + B = 2x^2 + 5xy + 10y^2$\n$(2)\\ A - B = x^2 + xy - 4y^2$\n$(1)+(2) \\implies 3A = 3x^2 + 6xy + 6y^2 \\implies A = x^2 + 2xy + 2y^2$\n$(2) \\implies B = A - (x^2 + xy - 4y^2) = xy + 6y^2$\n$\\therefore A - 2B = (x^2 + 2xy + 2y^2) - 2(xy + 6y^2) = x^2 - 10y^2$"
     },
     {
         id: 2,
@@ -22,7 +22,7 @@ const questionBank = [
         content: "$x^2 + \\tf{1}{x^2} = 7$일 때, $x^3 + \\tf{1}{x^3}$의 값을 구하시오. (단, $x > 0$) [2024 부영여고 1-1 중간 05번]",
         choices: ["14", "16", "18", "20", "22"],
         answer: "③",
-        solution: "1단계: $(x + \\tf{1}{x})^2 = x^2 + \\tf{1}{x^2} + 2 = 9$. $x > 0$이므로 $x + \\tf{1}{x} = 3$.\n2단계: $x^3 + \\tf{1}{x^3} = (x + \\tf{1}{x})^3 - 3(x + \\tf{1}{x}) = 3^3 - 3(3) = 18$.\n[행동 영역] '단, $x > 0$' 조건을 통해 음의 근을 배제하는 습관이 중요합니다."
+        solution: "$(x + \\tf{1}{x})^2 = x^2 + \\tf{1}{x^2} + 2 = 7 + 2 = 9$\n$x > 0 \\implies x + \\tf{1}{x} = 3$\n$x^3 + \\tf{1}{x^3} = (x + \\tf{1}{x})^3 - 3(x + \\tf{1}{x})$\n$\\implies 3^3 - 3(3) = 18$\n$\\therefore 18$"
     },
     {
         id: 3,
@@ -31,7 +31,7 @@ const questionBank = [
         content: "다항식 $6x^3 - x^2 - 5x + 3$을 $3x - 2$로 나누었을 때 몫을 $Q(x)$, 나머지를 $R$이라 할 때, $Q(1) + R$의 값을 구하시오. [2024 부영여고 1-1 중간 08번]",
         choices: ["1", "2", "3", "4", "5"],
         answer: "③",
-        solution: "1단계: $x = \\tf{2}{3}$으로 조립제법 시행 시 몫의 계수 $6, 3, -3$과 나머지 $1$을 얻음.\n2단계: 나누는 식이 $3x-2$이므로 실제 몫 $Q(x) = (6x^2 + 3x - 3) \\div 3 = 2x^2 + x - 1$.\n3단계: $Q(1) = 2+1-1=2, R=1$이므로 합은 3.\n[자주 하는 실수] 조립제법의 몫을 보정 없이 그대로 사용하면 오답(7)이 나옵니다."
+        solution: "**[Logical Anchor]** 조립제법은 $x-\\tf{2}{3}$ 기준이므로, $3x-2$의 몫은 $\\tf{1}{3}$ 보정 필수.\n$x = \\tf{2}{3}$ 조립제법 $\\implies$ 몫 계수 $6, 3, -3$, 나머지 $1$\n$6x^3 - x^2 - 5x + 3 = (x - \\tf{2}{3})(6x^2 + 3x - 3) + 1$\n$\\implies (3x - 2)(2x^2 + x - 1) + 1$\n$\\therefore Q(x) = 2x^2 + x - 1,\\ R = 1$\n$Q(1) = 2 + 1 - 1 = 2 \\implies Q(1) + R = 3$"
     },
     {
         id: 4,
@@ -40,7 +40,7 @@ const questionBank = [
         content: "다항식 $2x^3 - 9x^2 - 4x + 7$을 인수분해 하면 $(x+1)(2x^2 + bx + c)$일 때, $b+c$의 값을 구하시오. [2024 부영여고 1-1 중간 11번]",
         choices: ["-6", "-4", "-2", "2", "4"],
         answer: "②",
-        solution: "1단계: $x = -1$로 조립제법 시행.\n2단계: 계수 $2, -9, -4, 7$ 연산 결과 몫 $2, -11, 7$ 획득.\n3단계: $b = -11, c = 7$이므로 $b+c = -4$."
+        solution: "$x = -1$ 조립제법 $\\implies$ 계수 $2, -9, -4, 7$\n$\\implies$ 몫 $2, -11, 7,\\ R=0$\n$2x^3 - 9x^2 - 4x + 7 = (x+1)(2x^2 - 11x + 7)$\n$\\implies b = -11,\\ c = 7$\n$\\therefore b+c = -4$"
     },
     {
         id: 5,
@@ -49,10 +49,8 @@ const questionBank = [
         content: "$a+b+c=3, a^2+b^2+c^2=13, abc=-7$일 때 $(a+b)(b+c)(c+a)$의 값을 구하시오. [2024 부영여고 1-1 중간 13번]",
         choices: ["-3", "-1", "1", "3", "5"],
         answer: "③",
-        solution: "1단계: $a+b=3-c, b+c=3-a, c+a=3-b$로 치환.\n2단계: $(3-a)(3-b)(3-c) = 3^3 - (a+b+c)3^2 + (ab+bc+ca)3 - abc$.\n3단계: $(a+b+c)^2 = a^2+b^2+c^2+2(ab+bc+ca) \\Rightarrow 9=13+2X \\Rightarrow X=-2$.\n4단계: $27 - 27 - 6 + 7 = 1$."
+        solution: "**[Logical Anchor]** 3개 항의 곱은 $a+b+c=3$ 대입 치환으로 전개 차수 하향.\n$a+b=3-c,\\ b+c=3-a,\\ c+a=3-b$\n$(3-a)(3-b)(3-c) = 3^3 - (a+b+c)3^2 + (ab+bc+ca)3 - abc \\cdots (1)$\n$(a+b+c)^2 = a^2+b^2+c^2 + 2(ab+bc+ca) \\implies 9 = 13 + 2(ab+bc+ca) \\implies ab+bc+ca = -2$\n$(1) \\implies 27 - 3(9) + (-2)(3) - (-7) = 1$\n$\\therefore 1$"
     },
-
-    // Part 2 ~ Part 6 통합 데이터 (지침에 따라 내용 축약 없이 전체 병합)
     {
         id: 6,
         level: "상",
@@ -60,7 +58,7 @@ const questionBank = [
         content: "모든 자연수 $n$에 대하여 $x^n(x^2+ax+b)$를 $(x-2)^2$으로 나누었을 때의 나머지가 $2^n(x-2)$일 때, $a+b$의 값을 구하시오. [2024 부영여고 1-1 중간 15번]",
         choices: ["-2", "-1", "0", "1", "2"],
         answer: "②",
-        solution: "1단계: $x=2$ 대입 시 $4+2a+b=0 \\Rightarrow b = -2a-4$.\n2단계: $x^2+ax-2a-4 = (x-2)(x+a+2)$ 대입 후 양변 $(x-2)$ 약분.\n3단계: $x^n(x+a+2) = (x-2)Q(x) + 2^n$에 다시 $x=2$ 대입.\n4단계: $2^n(a+4) = 2^n \\Rightarrow a=-3, b=2$. 따라서 $a+b=-1$."
+        solution: "**[Logical Anchor]** 완전제곱식 나눗셈은 첫 대입 후 공통인수 $(x-2)$ 약분이 필수.\n$x^n(x^2+ax+b) = (x-2)^2 Q(x) + 2^n(x-2) \\cdots (1)$\n$x=2$ 대입 $\\implies 2^n(4+2a+b) = 0 \\implies b = -2a-4$\n$x^2+ax-2a-4 = (x-2)(x+a+2)$\n$(1)$에 대입 후 $(x-2)$ 약분 $\\implies x^n(x+a+2) = (x-2)Q(x) + 2^n$\n$x=2$ 대입 $\\implies 2^n(a+4) = 2^n \\implies a = -3$\n$b = -2(-3)-4 = 2$\n$\\therefore a+b = -1$"
     },
     {
         id: 7,
@@ -69,7 +67,7 @@ const questionBank = [
         content: "다항식 $f(x) = x^3 - x^2 + ax + b$를 $x^2-2x-2$로 나누었을 때의 몫을 $Q(x)$, 나머지를 $R(x)$라 하자. $R(2)=6$이고, $f(x)$는 $Q(x)$로 나누어떨어질 때, $f(3)$의 값을 구하시오. [2024 부영여고 1-1 중간 서술형 1번]",
         choices: [" ", " ", " ", " ", " "],
         answer: "30",
-        solution: "1단계: 최고차항 비교로 $Q(x)=x+1$ 설정. $f(-1)=0 \\Rightarrow b-a=2$.\n2단계: 직접 나눗셈 식 정리 시 $R(x)=(a+2)x+(b+2)$.\n3단계: $R(2)=6 \\Rightarrow 2a+b=0$. 연립하면 $a=2, b=4$.\n4단계: $f(3) = 27-9+6+4=30$."
+        solution: "**[Logical Anchor]** 3차 $\\div$ 2차이므로 $Q(x)$는 1차. 최고차항 비교 $Q(x)=x+1$ 설정.\n$f(x) = (x^2-2x-2)(x+1) + R(x) = x^3-x^2-4x-2 + R(x)$\n$R(x) = f(x) - (x^3-x^2-4x-2) = (a+4)x + (b+2)$\n$Q(x)$로 나누어떨어짐 $\\implies f(-1)=0 \\implies -a+b=2$\n$R(2)=6 \\implies 2(a+4)+b+2=6 \\implies 2a+b=-4$\n연립 $\\implies a=-2,\\ b=0$\n$f(x) = x^3-x^2-2x$\n$\\therefore f(3) = 27-9-6 = 12$"
     },
     {
         id: 8,
@@ -78,7 +76,7 @@ const questionBank = [
         content: "두 다항식 $A, B$에 대하여 $2A + B = 3x^2 - 2xy - y^2$, $A - B = -x^2 + 4xy + 5y^2$일 때, $A + 2B = ax^2 + bxy + cy^2$이다. $a+b+c$의 값을 구하시오. [2024 한영고 1-1 중간 01번]",
         choices: ["-10", "-8", "-6", "4", "8"],
         answer: "②",
-        solution: "1단계: 더하면 $3A = 2x^2+2xy+4y^2 \\Rightarrow A = \\tf{2}{3}x^2 + \\tf{2}{3}xy + \\tf{4}{3}y^2$.\n2단계: $B = A - (-x^2+4xy+5y^2) = \\tf{5}{3}x^2 - \\tf{10}{3}xy - \\tf{11}{3}y^2$.\n3단계: $A+2B = 4x^2 - 6xy - 6y^2$. 합은 $4-6-6 = -8$."
+        solution: "$(1)\\ 2A + B = 3x^2 - 2xy - y^2$\n$(2)\\ A - B = -x^2 + 4xy + 5y^2$\n$(1)+(2) \\implies 3A = 2x^2 + 2xy + 4y^2 \\implies A = \\tf{2}{3}x^2 + \\tf{2}{3}xy + \\tf{4}{3}y^2$\n$(2) \\implies B = \\tf{5}{3}x^2 - \\tf{10}{3}xy - \\tf{11}{3}y^2$\n$A + 2B = 4x^2 - 6xy - 6y^2$\n$\\implies a=4,\\ b=-6,\\ c=-6$\n$\\therefore a+b+c = -8$"
     },
     {
         id: 9,
@@ -87,7 +85,7 @@ const questionBank = [
         content: "$x+y=4, xy=2$일 때, $x^3 + y^3$의 값을 구하시오. [2024 한영고 1-1 중간 04번]",
         choices: ["32", "36", "40", "44", "48"],
         answer: "③",
-        solution: "공식 $x^3+y^3 = (x+y)^3 - 3xy(x+y)$ 대입: $4^3 - 3(2)(4) = 64 - 24 = 40$."
+        solution: "$x^3 + y^3 = (x+y)^3 - 3xy(x+y)$\n$\\implies 4^3 - 3(2)(4)$\n$= 64 - 24 = 40$\n$\\therefore 40$"
     },
     {
         id: 10,
@@ -96,7 +94,7 @@ const questionBank = [
         content: "등식 $a(x-1)(x+1) + bx(x-1) + cx(x+1) = 2x^2 + 3x + 4$가 $x$에 대한 항등식일 때, $-a+2b+2c$의 값을 구하시오. [2024 한영고 1-1 중간 08번]",
         choices: ["12", "14", "16", "18", "20"],
         answer: "③",
-        solution: "1단계: $x=0 \\Rightarrow -a=4 \\Rightarrow a=-4$.\n2단계: $x=1 \\Rightarrow 2c=9, x=-1 \\Rightarrow 2b=3$.\n3단계: 구하는 값 $-(-4) + 3 + 9 = 16$."
+        solution: "항등식 수치대입법:\n$x=0 \\implies -a = 4 \\implies a = -4$\n$x=1 \\implies 2c = 2+3+4 \\implies c = \\tf{9}{2}$\n$x=-1 \\implies 2b = 2-3+4 \\implies b = \\tf{3}{2}$\n$\\therefore -a + 2b + 2c = -(-4) + 3 + 9 = 16$"
     },
     {
         id: 11,
@@ -105,7 +103,7 @@ const questionBank = [
         content: "다항식 $x^2 - xy - 2y^2 - x - 7y - 6$이 $(x+ay-3)(x+by+c)$로 인수분해 될 때, $-2a+3b+c$의 값을 구하시오. [2024 한영고 1-1 중간 09번]",
         choices: ["5", "7", "9", "11", "13"],
         answer: "③",
-        solution: "1단계: $x^2 - (y+1)x - (2y^2+7y+6) = x^2 - (y+1)x - (2y+3)(y+2)$.\n2단계: $(x-2y-3)(x+y+2)$로 인수분해됨.\n3단계: $a=-2, b=1, c=2$. 최종값 $-2(-2)+3(1)+2 = 9$."
+        solution: "**[Logical Anchor]** 복잡한 식의 인수분해는 한 문자에 대한 내림차순 정리가 원칙.\n$x^2 - (y+1)x - (2y^2+7y+6)$\n$\\implies x^2 - (y+1)x - (2y+3)(y+2)$\n$\\implies (x - (2y+3))(x + (y+2))$\n$\\implies (x - 2y - 3)(x + y + 2)$\n$\\implies a=-2,\\ b=1,\\ c=2$\n$\\therefore -2(-2) + 3(1) + 2 = 9$"
     },
     {
         id: 12,
@@ -114,7 +112,7 @@ const questionBank = [
         content: "다항식 $f(x)$를 $x+2$로 나누었을 때 몫이 $Q(x)$, 나머지가 $-4$이고 $Q(x)$를 $x-3$으로 나누었을 때 나머지가 $3$이다. $f(x)$를 $x^2-x-6$으로 나누었을 때의 나머지 $R(x)$에 대하여 $R(1)$의 값을 구하시오. [2024 한영고 1-1 중간 12번]",
         choices: ["1", "3", "5", "7", "9"],
         answer: "③",
-        solution: "1단계: $f(-2)=-4$. $f(3) = (3+2)Q(3)-4 = 5(3)-4=11$.\n2단계: $R(x)=ax+b$에서 $-2a+b=-4, 3a+b=11$ 연립.\n3단계: $a=3, b=2 \\Rightarrow R(x)=3x+2, R(1)=5$."
+        solution: "**[Logical Anchor]** $x^2-x-6=(x+2)(x-3)$이므로 $f(-2)$와 $f(3)$의 값이 모두 필요함.\n$f(x) = (x+2)Q(x) - 4 \\cdots (1)$\n$Q(3) = 3 \\implies (1)$에 대입 $\\implies f(3) = (3+2)Q(3) - 4 = 11$\n$f(-2) = -4$\n$f(x) = (x^2-x-6)Q'(x) + ax+b = (x+2)(x-3)Q'(x) + ax+b$\n$\\implies -2a+b = -4,\\ 3a+b = 11$\n연립 $\\implies 5a = 15 \\implies a=3,\\ b=2$\n$\\implies R(x) = 3x+2$\n$\\therefore R(1) = 5$"
     },
     {
         id: 13,
@@ -123,7 +121,7 @@ const questionBank = [
         content: "최고차항 계수가 $1$인 이차식 $f(x)$가 $x+2$로 나누어떨어진다. $f(x^2)$을 $f(x)$로 나누었을 때의 나머지가 $10x+2$일 때, $f(2)$의 값을 구하시오. [2024 한영고 1-1 중간 15번]",
         choices: ["-25", "-20", "-15", "15", "20"],
         answer: "②",
-        solution: "1단계: $f(x)=(x+2)(x-k)$.\n2단계: $f(x^2)=f(x)Q(x)+10x+2$에 $x=-2$ 대입.\n3단계: $f(4) = 6(4-k) = 10(-2)+2 = -18 \\Rightarrow 4-k=-3, k=7$.\n4단계: $f(2) = (4)(-5) = -20$."
+        solution: "**[Logical Anchor]** $f(x)$가 이차식이므로 $f(x)=(x+2)(x-k)$로 설정 후 수치대입법 적용.\n$f(x^2) = f(x)Q(x) + 10x+2$\n$x=-2$ 대입 $\\implies f(4) = f(-2)Q(-2) + 10(-2)+2 = -18$\n$f(x) = (x+2)(x-k) \\implies f(4) = 6(4-k) = -18$\n$\\implies 4-k = -3 \\implies k=7$\n$f(x) = (x+2)(x-7)$\n$\\therefore f(2) = (4)(-5) = -20$"
     },
     {
         id: 14,
@@ -132,7 +130,7 @@ const questionBank = [
         content: "등식 $x^3 - 4x^2 + 3x - 5 = a(x-2)^3 + b(x-2)^2 + c(x-2) + d$가 항등식일 때, $ab + cd$의 값을 구하시오. [2024 한영고 1-1 중간 17번]",
         choices: ["5", "7", "9", "11", "13"],
         answer: "③",
-        solution: "1단계: $2$로 연속 조립제법 시행.\n2단계: 나머지가 순서대로 $d=-7, c=-1, b=2, a=1$.\n3단계: $ab+cd = (1)(2) + (-1)(-7) = 2+7=9$."
+        solution: "**[Logical Anchor]** 동일한 일차식의 거듭제곱 꼴로 식을 전개할 때는 연속 조립제법이 가장 빠르고 정확함.\n$x=2$로 연속 조립제법 시행:\n$1\\quad -4\\quad 3\\quad -5 \\implies$ 몫 $1\\quad -2\\quad -1,\\ R=-7 \\implies d=-7$\n$1\\quad -2\\quad -1 \\implies$ 몫 $1\\quad 0,\\ R=-1 \\implies c=-1$\n$1\\quad 0 \\implies$ 몫 $1,\\ R=2 \\implies b=2$\n마지막 몫 $1 \\implies a=1$\n$\\therefore ab+cd = (1)(2) + (-1)(-7) = 9$"
     },
     {
         id: 15,
@@ -141,7 +139,7 @@ const questionBank = [
         content: "다항식 $2x^3 - 4x^2 + 5$를 $x^2 - 3x - 1$로 나눈 (가)몫의 상수항, (나)몫의 일차항, (다)나머지일 때, (가)+(나)+(다)를 구하시오. [2024 한영고 1-1 중간 서답형 1번]",
         choices: [" ", " ", " ", " ", " "],
         answer: "10x+9",
-        solution: "1단계: 직접 나눗셈 시행.\n2단계: 몫은 $2x+2$, 나머지는 $8x+7$.\n3단계: (가)=2, (나)=2x, (다)=8x+7. 합은 $10x+9$."
+        solution: "직접 나눗셈 시행:\n$2x^3 - 4x^2 + 5 = (x^2 - 3x - 1)(2x + 2) + 8x + 7$\n$\\implies$ 몫: $2x+2$, 나머지: $8x+7$\n(가)$=2$, (나)$=2x$, (다)$=8x+7$\n$\\therefore (가)+(나)+(다) = 10x+9$"
     },
     {
         id: 16,
@@ -150,7 +148,7 @@ const questionBank = [
         content: "다항식 $x^4 + 5x^2 + 9$를 인수분해 하시오. [2024 여천고 1-1 중간 10번]",
         choices: [" ", " ", " ", " ", " "],
         answer: "$(x^2+x+3)(x^2-x+3)$",
-        solution: "1단계: $(x^2+3)^2 - x^2$ 꼴로 변형.\n2단계: 합차 공식 적용: $(x^2+3+x)(x^2+3-x)$."
+        solution: "**[Logical Anchor]** $x^2=t$ 치환으로 인수분해가 안 되는 복이차식은 $A^2 - B^2$ 꼴로 식 변형.\n$x^4 + 5x^2 + 9$\n$\\implies (x^4 + 6x^2 + 9) - x^2$\n$\\implies (x^2+3)^2 - x^2$\n$\\implies (x^2+3+x)(x^2+3-x)$\n$\\therefore (x^2+x+3)(x^2-x+3)$"
     },
     {
         id: 17,
@@ -159,7 +157,7 @@ const questionBank = [
         content: "다항식 $f(x)$를 $x-1$로 나눈 나머지 $3$, $x+2$로 나눈 나머지 $-3$일 때, $f(x)$를 $x^2+x-2$로 나눈 나머지 $R(3)$의 값을 구하시오. [2024 여천고 1-1 중간 12번]",
         choices: ["3", "5", "7", "9", "11"],
         answer: "③",
-        solution: "1단계: $f(1)=3, f(-2)=-3$.\n2단계: $R(x)=ax+b$에서 $a+b=3, -2a+b=-3$ 연립 $\\Rightarrow a=2, b=1$.\n3단계: $R(x)=2x+1, R(3)=7$."
+        solution: "$f(1) = 3,\\ f(-2) = -3$\n$f(x) = (x-1)(x+2)Q(x) + ax+b$\n$x=1 \\implies a+b = 3$\n$x=-2 \\implies -2a+b = -3$\n연립 $\\implies 3a = 6 \\implies a=2,\\ b=1$\n$\\implies R(x) = 2x+1$\n$\\therefore R(3) = 7$"
     },
     {
         id: 18,
@@ -168,7 +166,7 @@ const questionBank = [
         content: "다항식 $f(x)$를 $(x-1)^2$으로 나눈 나머지 $x+2$, $x-2$로 나눈 나머지 $4$일 때, $f(x)$를 $(x-1)^2(x-2)$로 나눈 나머지 $R(3)$의 값을 구하시오. [2023 중앙여고 1-1 중간 13번]",
         choices: ["1", "3", "5", "7", "9"],
         answer: "③",
-        solution: "1단계: $R(x) = a(x-1)^2 + x+2$ 설정.\n2단계: $f(2) = a(1)^2 + 4 = 4 \\Rightarrow a=0$.\n3단계: $R(x)=x+2, R(3)=5$."
+        solution: "**[Logical Anchor]** 3차식으로 나눈 나머지 $R(x)$는 2차식이므로, $(x-1)^2$으로 나눈 나머지가 $x+2$임을 이용하여 $R(x)=a(x-1)^2+x+2$로 설정.\n$f(x) = (x-1)^2(x-2)Q(x) + a(x-1)^2 + x+2$\n$x=2$ 대입 $\\implies f(2) = a(1)^2 + 4$\n$f(2) = 4 \\implies a+4 = 4 \\implies a=0$\n$\\implies R(x) = x+2$\n$\\therefore R(3) = 5$"
     },
     {
         id: 19,
@@ -177,7 +175,7 @@ const questionBank = [
         content: "$x+y=3, x^2+y^2=7$일 때 $x^4+y^4$의 값을 구하시오. [2023 중앙여고 1-1 중간 04번]",
         choices: ["43", "45", "47", "49", "51"],
         answer: "③",
-        solution: "1단계: $9 = 7+2xy \\Rightarrow xy=1$.\n2단계: $x^4+y^4 = (x^2+y^2)^2 - 2(xy)^2 = 7^2 - 2(1)^2 = 47$."
+        solution: "$(x+y)^2 = x^2+y^2 + 2xy \\implies 9 = 7 + 2xy \\implies xy=1$\n$x^4+y^4 = (x^2+y^2)^2 - 2x^2y^2$\n$\\implies 7^2 - 2(1)^2 = 49 - 2 = 47$\n$\\therefore 47$"
     },
     {
         id: 20,
@@ -186,7 +184,7 @@ const questionBank = [
         content: "다항식 $x^3 + ax + b$가 $(x-1)^2$으로 나누어떨어질 때, $a-b$의 값을 구하시오. [2023 중앙여고 1-1 중간 09번]",
         choices: ["-7", "-5", "-3", "3", "5"],
         answer: "②",
-        solution: "1단계: $x=1$ 연속 조립제법.\n2단계: $1+a+b+1=0$ (첫 번째), $a+1+2=0 \\Rightarrow a=-3$ (두 번째).\n3단계: $b=2$. 최종 $a-b = -5$."
+        solution: "**[Logical Anchor]** $(x-1)^2$으로 나누어떨어지면 $x=1$로 두 번 연속 조립제법 시 나머지가 모두 $0$.\n$x=1$ 첫 번째 조립제법:\n$1\\quad 0\\quad a\\quad b \\implies$ 몫 $1\\quad 1\\quad a+1,\\ R=a+b+1$\n$\\implies a+b+1 = 0 \\cdots (1)$\n$x=1$ 두 번째 조립제법 (몫을 다시 나눔):\n$1\\quad 1\\quad a+1 \\implies$ 몫 $1\\quad 2,\\ R=a+3$\n$\\implies a+3 = 0 \\implies a = -3$\n$(1) \\implies -3+b+1=0 \\implies b = 2$\n$\\therefore a-b = -5$"
     },
     {
         id: 21,
@@ -194,8 +192,8 @@ const questionBank = [
         category: "치환 인수분해",
         content: "다항식 $(x^2 - 4x + 3)(x^2 - 4x - 2) - 6$을 인수분해 하시오. [2024 한영고 1-1 중간 11번]",
         choices: [" ", " ", " ", " ", " "],
-        answer: "$(x-2)^2(x^2-4x-3)$",
-        solution: "1단계: $x^2-4x=X$ 치환.\n2단계: $(X+3)(X-2)-6 = X^2+X-12 = (X+4)(X-3)$.\n3단계: $(x^2-4x+4)(x^2-4x-3) = (x-2)^2(x^2-4x-3)$."
+        answer: "$(x-2)^2(x^2-4x-3)",
+        solution: "**[Logical Anchor]** 공통부분인 $x^2-4x$를 치환하여 전개 차수를 낮춤.\n$x^2-4x = X$ 치환\n$(X+3)(X-2) - 6 = X^2 + X - 12 = (X+4)(X-3)$\n원래 식 대입 $\\implies (x^2-4x+4)(x^2-4x-3)$\n$\\therefore (x-2)^2(x^2-4x-3)$"
     },
     {
         id: 22,
@@ -204,7 +202,7 @@ const questionBank = [
         content: "$x+y=1, x^2+y^2=3$일 때, $x^5+y^5$의 값을 구하시오. [2024 한영고 1-1 중간 14번]",
         choices: ["7", "9", "11", "13", "15"],
         answer: "③",
-        solution: "1단계: $xy=-1, x^3+y^3=4$ 도출.\n2단계: $x^5+y^5 = (x^2+y^2)(x^3+y^3) - x^2y^2(x+y) = (3)(4) - (-1)^2(1) = 11$."
+        solution: "**[Logical Anchor]** 차수가 높은 변형식은 기본 대칭식 $x+y$와 $xy$ 도출이 최우선.\n$x^2+y^2 = (x+y)^2 - 2xy \\implies 3 = 1^2 - 2xy \\implies xy = -1$\n$x^3+y^3 = (x+y)^3 - 3xy(x+y) = 1^3 - 3(-1)(1) = 4$\n$x^5+y^5 = (x^2+y^2)(x^3+y^3) - x^2y^2(x+y)$\n$\\implies (3)(4) - (-1)^2(1) = 12 - 1 = 11$\n$\\therefore 11$"
     },
     {
         id: 23,
@@ -213,7 +211,7 @@ const questionBank = [
         content: "다항식 $f(x)$를 $x^2+1$로 나누었을 때 나머지가 $x+1$이고, $(x-1)^2$으로 나누어떨어지는 3차식이다. $f(0)=2$일 때 $f(2)$를 구하시오. [2024 충무고 1-1 중간 14번]",
         choices: ["-14", "-12", "10", "12", "14"],
         answer: "②",
-        solution: "1단계: $f(x)=(x^2+1)(ax+b)+x+1$. $f(0)=b+1=2 \\Rightarrow b=1$.\n2단계: $f(1)=2(a+1)+2=0 \\Rightarrow a=-2$.\n3단계: $f(x)=(-2x+1)(x^2+1)+x+1 \\Rightarrow f(2)=(-3)(5)+3=-12$."
+        solution: "**[Logical Anchor]** 3차식을 2차식으로 나눈 몫은 1차식이므로 $f(x)=(x^2+1)(ax+b)+x+1$로 설정.\n$f(0) = 2 \\implies b+1 = 2 \\implies b = 1$\n$f(x)$는 $(x-1)^2$으로 나누어떨어짐 $\\implies f(1) = 0$\n$f(1) = 2(a+1) + 2 = 0 \\implies 2a+4 = 0 \\implies a = -2$\n$f(x) = (-2x+1)(x^2+1) + x+1$\n$\\therefore f(2) = (-3)(5) + 3 = -12$"
     },
     {
         id: 24,
@@ -222,7 +220,7 @@ const questionBank = [
         content: "$2x^3 - 5x^2 + 5x + 4$를 $x-2$로 나누었을 때의 몫과 나머지를 구하시오. [2024 충무고 1-1 중간 08번]",
         choices: [" ", " ", " ", " ", " "],
         answer: "몫: $2x^2-x+3$, 나머지: 10",
-        solution: "계수 $2, -5, 5, 4$를 $x=2$로 조립제법 시행."
+        solution: "$x=2$ 조립제법 $\\implies$ 계수 $2, -5, 5, 4$\n$\\implies$ 몫 $2, -1, 3,\\ R=10$\n$\\therefore$ 몫: $2x^2-x+3$, 나머지: $10$"
     },
     {
         id: 25,
@@ -231,7 +229,7 @@ const questionBank = [
         content: "$2024^{10}$을 $2023$으로 나누었을 때의 나머지를 구하시오. [2024 충무고 1-1 중간 12번]",
         choices: ["1", "20", "23", "2022", "2023"],
         answer: "①",
-        solution: "$x=2024$ 치환. $x^{10} = (x-1)Q(x)+R \\Rightarrow R=1^{10}=1$."
+        solution: "$x=2024$ 치환\n$x^{10} = (x-1)Q(x) + R$\n$x=1$ 대입 $\\implies R = 1^{10} = 1$\n$\\therefore 1$"
     },
     {
         id: 26,
@@ -240,7 +238,7 @@ const questionBank = [
         content: "다항식 $f(x)$를 $(x-1)^2$으로 나눈 나머지는 $2x-1$이고, $x+1$로 나눈 나머지는 $1$이다. $f(x)$를 $(x-1)^2(x+1)$로 나눈 나머지 $R(2)$를 구하시오. [2023 여천고 1-1 중간 14번]",
         choices: ["1", "4", "7", "10", "13"],
         answer: "②",
-        solution: "1단계: $R(x)=a(x-1)^2+2x-1$. $f(-1)=4a-3=1 \\Rightarrow a=1$.\n2단계: $R(x)=(x-1)^2+2x-1 \\Rightarrow R(2)=1+3=4$."
+        solution: "**[Logical Anchor]** 3차식으로 나눈 나머지 $R(x)$는 2차식이므로, 앞선 2차식의 나머지를 활용해 $R(x)=a(x-1)^2+2x-1$로 설정.\n$f(x) = (x-1)^2(x+1)Q(x) + a(x-1)^2 + 2x-1$\n$f(-1) = 1 \\implies a(-2)^2 + 2(-1) - 1 = 1$\n$\\implies 4a - 3 = 1 \\implies a = 1$\n$R(x) = (x-1)^2 + 2x-1$\n$\\therefore R(2) = (1)^2 + 4 - 1 = 4$"
     },
     {
         id: 27,
@@ -249,7 +247,7 @@ const questionBank = [
         content: "$x^{20} + x^{15} + x^{10} + x^5$를 $x^2-1$로 나누었을 때의 나머지 $R(2)$를 구하시오. [2023 충무고 1-1 중간 16번]",
         choices: ["2", "4", "6", "8", "10"],
         answer: "③",
-        solution: "1단계: $x=1 \\Rightarrow a+b=4, x=-1 \\Rightarrow -a+b=0$.\n2단계: $a=2, b=2 \\Rightarrow R(x)=2x+2, R(2)=6$."
+        solution: "$f(x) = x^{20} + x^{15} + x^{10} + x^5 = (x-1)(x+1)Q(x) + ax+b$\n$x=1$ 대입 $\\implies a+b = 4 \\cdots (1)$\n$x=-1$ 대입 $\\implies -a+b = 1 - 1 + 1 - 1 = 0 \\cdots (2)$\n연립 $\\implies a=2,\\ b=2$\n$R(x) = 2x+2$\n$\\therefore R(2) = 6$"
     },
     {
         id: 28,
@@ -258,7 +256,7 @@ const questionBank = [
         content: "$f(x)$를 $x^2-3x+2$로 나눈 나머지는 $4x-1$, $x^2-4x+3$으로 나눈 나머지는 $x+5$일 때 $f(x)$를 $x^2-5x+6$으로 나눈 나머지를 구하시오. [2024 부영여고 1-1 중간 12번]",
         choices: [" ", " ", " ", " ", " "],
         answer: "x+5",
-        solution: "1단계: $f(2)=7, f(3)=8$. $R(x)=ax+b$ 대입.\n2단계: $2a+b=7, 3a+b=8 \\Rightarrow a=1, b=5 \\Rightarrow R(x)=x+5$."
+        solution: "**[Logical Anchor]** 구하고자 하는 나머지의 기준식 $x^2-5x+6=(x-2)(x-3)$이므로 $f(2)$와 $f(3)$의 함숫값이 필요.\n$f(x)$를 $(x-1)(x-2)$로 나눈 나머지 $4x-1 \\implies f(2) = 4(2)-1 = 7$\n$f(x)$를 $(x-1)(x-3)$으로 나눈 나머지 $x+5 \\implies f(3) = 3+5 = 8$\n$f(x) = (x-2)(x-3)Q(x) + ax+b$\n$\\implies 2a+b = 7,\\ 3a+b = 8$\n연립 $\\implies a=1,\\ b=5$\n$\\therefore R(x) = x+5$"
     },
     {
         id: 29,
@@ -267,7 +265,7 @@ const questionBank = [
         content: "$x-y=2, xy=3$일 때, $x^3-y^3$의 값을 구하시오. [2023 중앙여고 1-1 중간 05번]",
         choices: ["20", "22", "24", "26", "28"],
         answer: "④",
-        solution: "$x^3-y^3 = (x-y)^3 + 3xy(x-y) = 2^3 + 3(3)(2) = 8+18=26$."
+        solution: "$x^3-y^3 = (x-y)^3 + 3xy(x-y)$\n$\\implies 2^3 + 3(3)(2)$\n$= 8 + 18 = 26$\n$\\therefore 26$"
     },
     {
         id: 30,
@@ -276,7 +274,7 @@ const questionBank = [
         content: "등식 $x^2-x-2 = a(x-1)^2 + b(x-1) + c$가 $x$에 대한 항등식일 때, $a+b+c$의 값을 구하시오. [2024 한영고 1-1 중간 10번]",
         choices: ["-2", "-1", "0", "1", "2"],
         answer: "③",
-        solution: "$x=2$ 대입 시 $4-2-2 = a(1)^2 + b(1) + c \\Rightarrow a+b+c=0$."
+        solution: "구하고자 하는 $a+b+c$ 꼴을 만들기 위해 우변의 괄호 안이 $1$이 되는 $x=2$를 대입.\n$x=2$ 대입 $\\implies 2^2 - 2 - 2 = a(1)^2 + b(1) + c$\n$\\implies 4 - 4 = a+b+c$\n$\\therefore a+b+c = 0$"
     },
     {
         id: 31,
@@ -285,7 +283,7 @@ const questionBank = [
         content: "삼각형의 세 변의 길이 $a, b, c$에 대하여 $a^3+b^3+c^3-3abc=0$이 성립할 때, 어떤 삼각형인가? [2023 여천고 1-1 중간 서술형 2번]",
         choices: ["정삼각형", "이등변삼각형", "직각삼각형", "직각이등변삼각형", "둔각삼각형"],
         answer: "①",
-        solution: "$a^3+b^3+c^3-3abc = \\tf{1}{2}(a+b+c)\\{(a-b)^2+(b-c)^2+(c-a)^2\\}=0$.\n$a+b+c \\neq 0$이므로 $a=b=c$."
+        solution: "$a^3+b^3+c^3-3abc = \\tf{1}{2}(a+b+c)\\{(a-b)^2+(b-c)^2+(c-a)^2\\} = 0$\n$a, b, c$는 변의 길이이므로 $a+b+c \\neq 0$\n$\\implies (a-b)^2+(b-c)^2+(c-a)^2 = 0$\n$\\implies a=b=c$\n$\\therefore 정삼각형$"
     },
     {
         id: 32,
@@ -294,6 +292,6 @@ const questionBank = [
         content: "다항식 $f(x)$를 $x^2+1$로 나누었을 때 몫이 $x-1$이고 나머지가 $2x+1$이다. $f(2)$의 값을 구하시오. [2023 충무고 1-1 중간 서술형 1번]",
         choices: ["6", "8", "10", "12", "14"],
         answer: "③",
-        solution: "$f(x)=(x^2+1)(x-1)+2x+1 \\Rightarrow f(2)=(5)(1)+5=10$."
+        solution: "$f(x) = (x^2+1)(x-1) + 2x+1$\n$f(2) = (2^2+1)(2-1) + 2(2)+1$\n$\\implies (5)(1) + 5 = 10$\n$\\therefore 10$"
     }
 ];
