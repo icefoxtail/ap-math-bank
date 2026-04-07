@@ -44,17 +44,17 @@
         async function loadData() {
             const urlParams = new URLSearchParams(window.location.search);
             let fileName = urlParams.get('data');
-            // 💡 [교정] 파라미터가 없을 때 명확한 가이드 제공
+            
+            /* [변경 위치] 404 Missing parameter 에러 방지를 위해 조건문 수정 */
             if (!fileName) { 
-                showError("데이터 파일이 지정되지 않았습니다.", "주소 끝에 ?data=파일명.js 를 붙여주세요."); 
-                throw new Error("Missing data parameter"); 
+                return null; 
             }
+            
             fileName = fileName.trim();
             if (fileName.includes('..')) { showError("보안 위험이 감지되었습니다.", fileName); throw new Error(); }
             globalExamTitle = fileName.replace(/\.js$/i, "");
             return new Promise((resolve, reject) => {
                 const script = document.createElement('script');
-                // 💡 [무결성] 캐시 방지 없이 순수 경로 고수
                 script.src = fileName; 
                 script.onload = () => {
                     let finalData = null;
@@ -80,10 +80,10 @@
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <style>
-        /* 💡 [교정] 더 안정적인 KoPubBatang 폰트 경로로 수정 */
+        /* [변경 위치] 폰트 경로 404 에러 해결을 위해 CDN 주소 수정 */
         @font-face { 
             font-family: 'KoPubBatang'; 
-            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoPubBatangMedium.woff') format('woff'); 
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoPubBatangMedium.woff') format('woff'); 
         }
         * { box-sizing: border-box; }
         body { margin: 0; padding: 0; font-family: 'KoPubBatang', serif; font-size: 9.5pt; background: #f1f5f9; color: #1e293b; letter-spacing: -0.5px; }
@@ -196,7 +196,10 @@
             paginate();
         }
         window.onload = async () => {
-            try { await loadData(); await paginate(); } catch (e) { console.error(e); }
+            try { 
+                const res = await loadData(); 
+                if(res !== null) await paginate(); 
+            } catch (e) { console.error(e); }
         };
     </script>
 </body>
