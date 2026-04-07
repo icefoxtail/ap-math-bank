@@ -28,33 +28,22 @@
         .tab-btn.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
         .exam-item { display: block; padding: 15px; border-bottom: 1px solid #f1f1f1; text-decoration: none; color: #333; transition: 0.2s; }
         .exam-item:hover { background: #f9f9f9; padding-left: 20px; }
-        .q-card { margin-bottom: 40px; padding: 20px; border: 1px solid #eee; border-radius: 10px; position: relative; background: #fff; }
+        .q-card { margin-bottom: 40px; padding: 20px; border: 1px solid #eee; border-radius: 10px; position: relative; }
         .q-num { font-weight: bold; color: var(--accent); font-size: 18px; margin-bottom: 15px; }
         .q-text { font-size: 17px; margin-bottom: 20px; word-break: keep-all; }
         .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .option { display: flex; align-items: flex-start; gap: 8px; font-size: 16px; }
         .ans-section { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd; display: none; }
-        .ans-btn { background: #eee; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; color: #666; font-weight: bold; }
+        .ans-btn { background: #eee; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; color: #666; }
         .ans-btn:hover { background: #ddd; }
         #main-view { display: block; }
         #exam-view { display: none; }
-        .back-bar { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-
-        /* 인쇄 시 정답 표시 제어 */
-        @media print {
-            .no-print { display: none !important; }
-            .container { max-width: 100%; box-shadow: none; padding: 0; margin: 0; border: none; }
-            .q-card { page-break-inside: avoid; }
-            /* 모드별 인쇄 노출 설정 */
-            .mode-solution .ans-section { display: block !important; }
-            .mode-answer .ans-section { display: block !important; }
-            .mode-answer .ans-section small { display: none !important; } /* 정답표는 해설 숨김 */
-        }
+        .back-bar { margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div class="container no-print" id="main-view">
+<div class="container" id="main-view">
     <h1>AP 수학학원 기출 저장소</h1>
     <input type="text" id="searchInput" class="search-box" placeholder="학교명 또는 연도 검색...">
     <div class="tabs" id="categoryTabs"></div>
@@ -62,15 +51,11 @@
 </div>
 
 <div class="container" id="exam-view">
-    <div class="back-bar no-print">
+    <div class="back-bar">
         <button class="ans-btn" onclick="location.href=location.pathname">← 목록으로</button>
-        <div style="display:flex; gap:5px;">
-            <button class="ans-btn" onclick="setMode('mode-exam')">시험지</button>
-            <button class="ans-btn" onclick="setMode('mode-solution')">해설지</button>
-            <button class="ans-btn" onclick="setMode('mode-answer')">정답표</button>
-        </div>
+        <button class="ans-btn" style="float:right" onclick="toggleAllAnswers()">정답 모두 보기</button>
     </div>
-    <div id="exam-content" class="mode-exam"></div>
+    <div id="exam-content"></div>
 </div>
 
 <script>
@@ -117,24 +102,7 @@
         renderList(cat);
     }
 
-    // [고정] 3가지 모드 전환 함수
-    function setMode(mode) {
-        const content = document.getElementById('exam-content');
-        content.className = mode;
-        const ansSections = document.querySelectorAll('.ans-section');
-        const solutions = document.querySelectorAll('.ans-section small');
-
-        if (mode === 'mode-exam') {
-            ansSections.forEach(s => s.style.display = 'none');
-        } else if (mode === 'mode-solution') {
-            ansSections.forEach(s => s.style.display = 'block');
-            solutions.forEach(sl => sl.style.display = 'block');
-        } else if (mode === 'mode-answer') {
-            ansSections.forEach(s => s.style.display = 'block');
-            solutions.forEach(sl => sl.style.display = 'none'); // 정답표는 해설만 숨김
-        }
-    }
-
+    // [교정 포인트] 데이터 필드명 동기화: content, choices, solution
     function render() {
         const content = document.getElementById('exam-content');
         if (typeof questionBank === 'undefined') return;
@@ -146,7 +114,7 @@
                 <div class="options-grid">
                     ${q.choices ? q.choices.map((opt, i) => `<div class="option"><span>${['①','②','③','④','⑤'][i]}</span> <span>${opt}</span></div>`).join('') : ''}
                 </div>
-                <button class="ans-btn no-print" style="margin-top:15px" onclick="this.nextElementSibling.style.display='block'">정답 확인</button>
+                <button class="ans-btn" style="margin-top:15px" onclick="this.nextElementSibling.style.display='block'">정답 확인</button>
                 <div class="ans-section">
                     <b style="color:red">정답: ${q.answer}</b><br>
                     <small style="color:#666">${q.solution || '해설이 없습니다.'}</small>
@@ -167,6 +135,10 @@
         script.src = dataFile;
         script.onload = () => { setTimeout(render, 100); };
         document.body.appendChild(script);
+    }
+
+    function toggleAllAnswers() {
+        document.querySelectorAll('.ans-section').forEach(s => s.style.display = 'block');
     }
 
     window.onload = init;
