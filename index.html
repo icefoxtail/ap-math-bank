@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>AP수학 마스터 엔진 v6.8.0 - 하이퍼 스테이블</title>
+    <title>AP수학 마스터 엔진 v6.9.5 - THE ULTIMATE MASTER</title>
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff" as="font" type="font/woff2" crossorigin>
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$', '$']], processEscapes: true, macros: { tf: ['\\dfrac{#1}{#2}', 2] } },
@@ -13,24 +14,40 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
+        @page { size: A4; margin: 0; }
         * { box-sizing: border-box; }
         body { margin: 0; padding: 0; font-family: 'Nanum Myeongjo', serif; font-size: 9.5pt; background: #f1f5f9; color: #1e293b; letter-spacing: -0.5px; }
+        
         .fav-btn { cursor: pointer; color: #cbd5e1; font-size: 14pt; transition: 0.2s; margin-right: 8px; vertical-align: middle; user-select: none; }
         .fav-btn.active { color: #f59e0b; }
-        .page { width: 210mm; height: 297mm; padding: 15mm; margin: 10mm auto; background: #fff; position: relative; overflow: hidden; page-break-after: always; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; margin-bottom: 5mm; padding-bottom: 2mm; font-weight: 800; font-size: 11pt; }
-        .content-container { display: flex; justify-content: space-between; height: 260mm; }
+        
+        .page { width: 210mm; height: 297mm; padding: 15mm; margin: 0 auto; background: #fff; position: relative; overflow: hidden; page-break-after: always; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; margin-bottom: 5mm; padding-bottom: 2mm; font-weight: 800; font-size: 11pt; flex-shrink: 0; }
+        .content-container { display: flex; justify-content: space-between; flex: 1; overflow: hidden; }
+        
+        /* 해설 모드 전용 스타일 */
+        body.sol-mode .content-container, body.sol-mode .col-left, body.sol-mode .col-right { overflow: visible; height: auto; }
+        
         .col-left, .col-right { width: 49.5%; height: 100%; overflow: hidden; }
         .col-left { border-right: 1px solid #f1f5f9; padding-right: 6mm; }
         .col-right { padding-left: 6mm; }
-        .item { position: relative; padding-top: 3mm; border-bottom: 1px solid #f8fafc; }
+
+        .item { position: relative; padding-top: 3mm; border-bottom: 1px solid #f8fafc; break-inside: avoid; page-break-inside: avoid; }
         body.test-mode .item { height: 130mm; overflow: hidden; }
         body.sol-mode .item { height: auto; padding-bottom: 6mm; }
+        
         .num { font-weight: 900; font-size: 11pt; color: #3b82f6; }
         .sol-box { margin-top: 8px; padding: 12px 16px; border-radius: 8px; background: #f8fafc; border-left: 4px solid #3b82f6; display: none; }
         body.sol-mode .sol-box { display: block; }
+
+        /* 정답표(Answer Key) 디자인 */
+        .answer-sheet { margin-top: 10mm; padding: 15px; border: 2px solid #3b82f6; border-radius: 10px; display: none; }
+        body.sol-mode .answer-sheet { display: block; }
+        .ans-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 12px; }
+        .ans-item { font-size: 9.5pt; font-weight: 700; border-bottom: 1px solid #f1f5f9; padding: 4px; color: #1e293b; }
+
         #mode-ctrl { position: fixed; top: 10px; right: 10px; z-index: 999; display: flex; gap: 8px; }
-        #mode-ctrl button { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: 0.2s; }
+        #mode-ctrl button { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .btn-test { background: #3b82f6; color: white; }
         .btn-sol  { background: #10b981; color: white; }
         #status-display { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; text-align: center; border: 2px solid #3b82f6; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); z-index: 1000; }
@@ -41,7 +58,7 @@
     <div id="mode-ctrl">
         <button class="btn-test" onclick="setMode('test-mode')">시험지 모드</button>
         <button class="btn-sol" onclick="setMode('sol-mode')">해설 모드</button>
-        <button onclick="window.print()" style="background:#1e293b; color:white;">PDF 출력</button>
+        <button onclick="handlePrint()" style="background:#1e293b; color:white;">PDF 출력</button>
     </div>
     <div id="print-area"></div>
     <div id="item-pool" style="display:none;"></div>
@@ -49,11 +66,27 @@
 
 <script>
 const AppState = { title: "AP 수학학원", fileKey: "", favorites: JSON.parse(localStorage.getItem('ap_favs') || '{}') };
+let isPrintWarned = false;
 
-function setMode(mode) { document.body.className = mode; }
-function toggleFav(id, btn) { AppState.favorites[id] = !AppState.favorites[id]; btn.classList.toggle('active', AppState.favorites[id]); localStorage.setItem('ap_favs', JSON.stringify(AppState.favorites)); }
+/* [최종 교정: 비동기 모드 전환] */
+async function setMode(mode) { 
+    if (document.body.className === mode) return;
+    document.body.className = mode; 
+    showStatus("레이아웃 재구성 중...", false);
+    await paginate(); 
+}
 
-// [보안강화] style 속성 내 악성 키워드 차단 로직 적용
+function toggleFav(id, btn) { 
+    AppState.favorites[id] = !AppState.favorites[id]; 
+    btn.classList.toggle('active', AppState.favorites[id]); 
+    localStorage.setItem('ap_favs', JSON.stringify(AppState.favorites)); 
+}
+
+function handlePrint() {
+    if (!isPrintWarned) { alert("인쇄 설정에서 [여백: 없음] 및 [배율: 100%]로 설정되어 있는지 확인하세요."); isPrintWarned = true; }
+    window.print();
+}
+
 function secureFormat(text) {
     if (!text) return "";
     const mathChunks = [];
@@ -62,51 +95,67 @@ function secureFormat(text) {
     const escaped = protected_.split(placeholder).map(part => {
         const div = document.createElement('div');
         div.textContent = part;
-        return div.innerHTML
-            .replace(/&lt;br\s*\/?&gt;/gi, '<br>')
-            .replace(/&lt;b&gt;(.*?)&lt;\/b&gt;/gi, '<b>$1</b>')
-            .replace(/&lt;(span|div)\s+style="([^"]*)"&gt;/gi, (_, t, s) => {
-                const safeStyle = s.replace(/url\s*\(|expression|javascript:/gi, ''); // 지피티 보안 훈수 반영
-                return `<${t} style="${safeStyle}">`;
-            })
+        return div.innerHTML.replace(/&lt;br\s*\/?&gt;/gi, '<br>').replace(/&lt;b&gt;(.*?)&lt;\/b&gt;/gi, '<b>$1</b>')
+            .replace(/&lt;(span|div)\s+style="([^"]*)"&gt;/gi, (_, t, s) => `<${t} style="${s.replace(/url\s*\(|expression|javascript:/gi, '')}">`)
             .replace(/&lt;\/(span|div)&gt;/gi, '</$1>');
     });
-    return escaped.reduce((acc, part, i) => acc + part + (mathChunks[i] || ""), "");
+    let res = ""; escaped.forEach((p, i) => { res += p + (mathChunks[i] || ""); });
+    return res;
 }
 
+/* [최종 교정: 정답표 생성 로직 완전 통합] */
 function renderItems() {
     const pool = document.getElementById('item-pool');
     pool.innerHTML = '';
-    (window.questionBank || []).forEach((q, i) => {
+    const data = window.questionBank || [];
+    
+    data.forEach((q, i) => {
         const qId = `${AppState.fileKey}_${i}`;
         const isFav = AppState.favorites[qId] ? 'active' : '';
         const item = document.createElement('div');
         item.className = 'item';
-        item.innerHTML = `<div class="q-box"><span class="fav-btn ${isFav}" onclick="toggleFav('${qId}', this)">★</span><span class="num">${i + 1}</span><span class="content">${secureFormat(q.content)}</span></div><div class="sol-box"><div style="font-weight:bold; color:#3b82f6; margin-bottom:4px; font-size:8.5pt;">SOLUTION</div><div style="font-size:9pt; color:#475569;">${secureFormat(q.solution)}</div><div style="color:#ef4444; font-weight:800; margin-top:8px; border-top:1px dashed #cbd5e1; padding-top:8px;">정답: ${q.answer}</div></div>`;
+        item.innerHTML = `
+            <div class="q-box">
+                <span class="fav-btn ${isFav}" onclick="toggleFav('${qId}', this)">★</span>
+                <span class="num">${i + 1}</span>
+                <span class="content">${secureFormat(q.content)}</span>
+            </div>
+            <div class="sol-box">
+                <div style="font-weight:bold; color:#3b82f6; margin-bottom:4px; font-size:8.5pt;">SOLUTION</div>
+                <div style="font-size:9pt; color:#475569;">${secureFormat(q.solution)}</div>
+                <div style="color:#ef4444; font-weight:800; margin-top:8px; border-top:1px dashed #cbd5e1; padding-top:8px;">정답: ${secureFormat(String(q.answer))}</div>
+            </div>`;
         pool.appendChild(item);
     });
+
+    const ansSheet = document.createElement('div');
+    ansSheet.className = 'item answer-sheet';
+    let ansHtml = `<div style="font-weight:900; color:#3b82f6; font-size:12pt; border-bottom:2px solid #3b82f6; padding-bottom:8px; margin-bottom:10px;">Quick Answer Key (정답표)</div><div class="ans-grid">`;
+    data.forEach((q, i) => { ansHtml += `<div class="ans-item"><span style="color:#3b82f6;">${i + 1}.</span> ${secureFormat(String(q.answer))}</div>`; });
+    ansHtml += `</div>`;
+    ansSheet.innerHTML = ansHtml;
+    pool.appendChild(ansSheet);
 }
 
-// [조판강화] 고정값 배제 및 실제 DOM 높이 측정 로직
+/* [최종 교정: 무결성 조판 엔진] */
 async function paginate() {
-    await new Promise(r => requestAnimationFrame(r)); // 지피티 렌더링 동기화 훈수 반영
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     const printArea = document.getElementById('print-area');
     printArea.innerHTML = '';
     const items = Array.from(document.getElementById('item-pool').querySelectorAll('.item'));
+    const isSolMode = document.body.classList.contains('sol-mode');
     
     let page, col, used = 0, colIdx = 0, COL_LIMIT = 0;
     const addPage = () => {
-        page = document.createElement('div');
-        page.className = 'page';
+        page = document.createElement('div'); page.className = 'page';
         page.innerHTML = `<div class="header"><span>${AppState.title}</span><span>- ${printArea.children.length + 1} -</span></div><div class="content-container"><div class="col-left"></div><div class="col-right"></div></div>`;
         printArea.appendChild(page);
-        col = page.querySelector('.col-left'); 
-        used = 0; colIdx = 0;
-        COL_LIMIT = col.clientHeight; // 실제 브라우저가 계산한 컬럼 높이 사용
+        col = page.querySelector('.col-left'); used = 0; colIdx = 0; COL_LIMIT = col.clientHeight;
     };
 
     addPage();
     items.forEach(item => {
+        if (item.classList.contains('answer-sheet') && !isSolMode) return;
         col.appendChild(item);
         const itemH = item.offsetHeight;
         if (used + itemH > COL_LIMIT) {
@@ -117,19 +166,19 @@ async function paginate() {
             used = item.offsetHeight;
         } else { used += itemH; }
     });
+    showStatus("", false); 
 }
 
 async function initRender() {
+    showStatus("데이터 분석 및 조판 중...", false);
     renderItems();
-    if (window.MathJax) {
-        await MathJax.startup.promise;
-        await MathJax.typesetPromise([document.getElementById('item-pool')]);
-    }
-    paginate();
+    if (window.MathJax) { await MathJax.startup.promise; await MathJax.typesetPromise([document.getElementById('item-pool')]); }
+    await paginate();
 }
 
 function showStatus(msg, isError = false) {
     const el = document.getElementById('status-display');
+    if (!msg) { el.style.display = 'none'; return; }
     el.style.display = 'block';
     el.innerHTML = `<h3 style="color:${isError ? '#ef4444' : '#1e293b'}">${isError ? '⚠️ 오류' : '⚙️ 처리 중'}</h3><p>${msg}</p>` + (isError ? `<button onclick="location.reload()" style="margin-top:10px; cursor:pointer;">재시도</button>` : '');
 }
@@ -137,8 +186,7 @@ function showStatus(msg, isError = false) {
 (function loadControl() {
     const params = new URLSearchParams(window.location.search);
     const dataFile = params.get('data');
-    if (!dataFile) return;
-    if (!dataFile.match(/^[a-zA-Z0-9_\-\.]+\.js$/)) { showStatus("잘못된 파일 형식입니다.", true); return; }
+    if (!dataFile || !dataFile.match(/^[a-zA-Z0-9_\-\.]+\.js$/)) { showStatus("잘못된 파일 형식입니다.", true); return; }
     AppState.fileKey = dataFile.split('.')[0];
     AppState.title = decodeURIComponent(params.get('title') || "AP 수학학원 기출");
     const script = document.createElement('script');
