@@ -2,10 +2,17 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>AP수학 엔진 v7.1.3</title>
+    <title>AP수학 엔진 v7.1.5</title>
     <script>
         window.MathJax = {
-            tex: { inlineMath: [['$', '$']], macros: { tf: ['\\dfrac{#1}{#2}', 2] } },
+            tex: { 
+                inlineMath: [['$', '$']], 
+                macros: { 
+                    tf: ['\\dfrac{#1}{#2}', 2],
+                    implies: '\\Rightarrow',
+                    therefore: '\\therefore'
+                } 
+            },
             startup: { typeset: false }
         };
     </script>
@@ -13,77 +20,124 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
         @page { size: A4; margin: 0; }
-        body { margin: 0; font-family: 'Nanum Myeongjo', serif; font-size: 9.5pt; background: #f1f5f9; }
+        body { margin: 0; font-family: 'Nanum Myeongjo', serif; font-size: 9.5pt; background: #f1f5f9; padding-top: 50px; }
         
-        /* 페이지 및 4분할 격자 핵심 */
-        .page { width: 210mm; height: 297mm; padding: 15mm; margin: 0 auto; background: #fff; page-break-after: always; display: flex; flex-direction: column; position: relative; }
+        /* [핵심] 상단 네비게이션 바 - 양 끝 정렬 */
+        #mode-ctrl { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 50px;
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 0 20px; box-sizing: border-box; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px);
+            z-index: 1000; border-bottom: 1px solid #e2e8f0; 
+        }
+        #mode-ctrl button { 
+            padding: 8px 18px; cursor: pointer; font-weight: bold; 
+            border-radius: 6px; border: none; font-size: 9pt; transition: 0.2s;
+        }
+        #mode-ctrl button:hover { opacity: 0.8; }
+
+        /* 페이지 및 4분할 격자 시스템 */
+        .page { width: 210mm; height: 297mm; padding: 15mm; margin: 0 auto 10mm auto; background: #fff; page-break-after: always; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .content-container { display: flex; flex: 1; }
 
-        /* [시험지 모드] 격자 강제 고정 (이탈 방지) */
+        /* [시험지 모드] */
         body.test-mode .content-container { display: grid !important; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10mm; }
         body.test-mode .item { height: 100% !important; max-height: 130mm; overflow: hidden; border: 1px solid #f1f5f9; padding: 5mm; }
+        body.test-mode .sol-mode-only { display: none !important; }
 
-        /* [해설지 모드] 지문 제거 및 흐름형 */
+        /* [해설지 모드] */
         body.sol-mode .content-container { display: block; column-count: 2; column-gap: 10mm; }
         body.sol-mode .q-box .content { display: none !important; }
         body.sol-mode .item { break-inside: avoid; border-bottom: 1px dashed #ccc; padding-bottom: 5mm; margin-bottom: 5mm; }
+        body.sol-mode .sol-mode-only { display: block !important; } /* 해설 강제 노출 */
 
-        /* [수정] 논리적 근거 태그 스타일 */
+        /* [정답표 모드] */
+        body.ans-mode .item { display: none; }
+        .ans-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .ans-table td { border: 1px solid #cbd5e1; padding: 10px; text-align: center; width: 15%; font-size: 10pt; }
+        .ans-table .idx { background: #f8fafc; font-weight: bold; width: 5%; }
+
+        /* 공통 요소 스타일 */
         .logic-tag { background: #f8fafc; color: #3b82f6; padding: 2px 6px; border: 1px solid #e2e8f0; border-radius: 4px; font-weight: bold; font-size: 0.85em; }
-        
-        #mode-ctrl { position: fixed; top: 10px; right: 10px; z-index: 1000; }
-        #mode-ctrl button { padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 8px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .choice-list { list-style: none; padding: 0; margin: 8px 0 0 0; }
+        .choice-item { display: flex; align-items: flex-start; margin-bottom: 3px; }
+        .choice-num { font-weight: bold; margin-right: 7px; flex-shrink: 0; }
+
+        @media print { .no-print { display: none !important; } body { background: none; padding-top: 0; } .page { margin: 0; box-shadow: none; } }
     </style>
 </head>
 <body class="test-mode">
     <div id="mode-ctrl" class="no-print">
-        <button onclick="setMode('test-mode')" style="background:#3b82f6; color:white;">시험지 모드</button>
-        <button onclick="setMode('sol-mode')" style="background:#10b981; color:white;">해설 모드</button>
+        <button onclick="history.back()" style="background:#64748b; color:white;">뒤로가기</button>
+        <div style="display:flex; gap:8px;">
+            <button onclick="setMode('test-mode')" style="background:#3b82f6; color:white;">시험</button>
+            <button onclick="setMode('sol-mode')" style="background:#10b981; color:white;">해설</button>
+            <button onclick="setMode('ans-mode')" style="background:#f59e0b; color:white;">정답</button>
+        </div>
     </div>
     <div id="print-area"></div>
     <div id="item-pool" style="display:none;"></div>
 
 <script>
-const AppState = { title: "AP 수학학원 기출" };
+const AppState = { title: "24_연향중2_1학기_중간_중2" };
 
 function secureFormat(text) {
     if (!text) return "";
     const mathChunks = [];
     const protected_ = String(text).replace(/\$[\s\S]*?\$/g, m => { mathChunks.push(m); return '\x00MATH\x00'; });
     
-    // [수정 핵심] 기본 보안 적용 후 특정 태그만 살림
     let escaped = protected_.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     escaped = escaped
         .replace(/&lt;br\s*\/?&gt;/gi, '<br>')
-        .replace(/&lt;span class=&quot;logic-tag&quot;&gt;(.*?)&lt;\/span&gt;/gi, '<span class="logic-tag">$1</span>')
-        .replace(/&lt;b&gt;(.*?)&lt;\/b&gt;/gi, '<b>$1</b>');
+        .replace(/&lt;b&gt;(.*?)&lt;\/b&gt;/gi, '<b>$1</b>')
+        .replace(/&lt;span class=&quot;(.*?)&quot;&gt;(.*?)&lt;\/span&gt;/gi, '<span class="$1">$2</span>')
+        .replace(/&lt;div style=&quot;(.*?)&quot;&gt;/gi, '<div style="$1">')
+        .replace(/&lt;\/div&gt;/gi, '</div>');
 
     return escaped.split('\x00MATH\x00').map((p, i) => p + (mathChunks[i] || "")).join('');
 }
 
 function renderItems() {
     const pool = document.getElementById('item-pool');
-    pool.innerHTML = (window.questionBank || []).map((q, i) => `
+    const CIRCLED = ['①','②','③','④','⑤'];
+
+    pool.innerHTML = (window.questionBank || []).map((q, i) => {
+        const isSubjective = !q.choices || q.choices.length === 0 || q.choices.every(c => !c || c.trim() === '');
+        const choicesHtml = isSubjective
+            ? `<div style="margin-top:10px; border:1px solid #cbd5e1; border-radius:4px; height:32mm; background:#f8fafc; position:relative;">
+                 <span style="position:absolute; top:5px; left:10px; font-size:7.5pt; color:#94a3b8;">[답안 및 풀이 기입란]</span>
+               </div>`
+            : `<div class="choice-list">
+                ${q.choices.map((c, ci) => `
+                    <div class="choice-item">
+                        <span class="choice-num">${CIRCLED[ci]}</span>
+                        <span>${secureFormat(c)}</span>
+                    </div>`).join('')}
+               </div>`;
+
+        return `
         <div class="item">
+            <div style="font-size:7.5pt; color:#94a3b8; margin-bottom:3px;">[${q.level || '중'}] ${q.category || '기출'}</div>
             <div class="q-box">
-                <b style="color:#3b82f6;">${i+1}.</b> <span class="content">${secureFormat(q.content)}</span>
+                <b style="color:#3b82f6; font-size:10.5pt;">${i+1}.</b> 
+                <span class="content">${secureFormat(q.content)}</span>
+                ${choicesHtml}
             </div>
-            <div class="sol-mode-only" style="margin-top:10px; font-size:9pt; color:#64748b; display:none;">
-                <div style="font-weight:bold; color:#10b981;">[해설]</div>
-                ${secureFormat(q.solution)}
-                <div style="text-align:right; font-weight:bold; color:#ef4444;">정답: ${q.answer}</div>
+            <div class="sol-mode-only" style="margin-top:12px; font-size:9pt; color:#475569;">
+                <div style="font-weight:bold; color:#10b981; border-top:1px dashed #e2e8f0; padding-top:8px; margin-bottom:4px;">[해설]</div>
+                <div style="line-height:1.6;">${secureFormat(q.solution)}</div>
+                <div style="text-align:right; font-weight:bold; color:#ef4444; margin-top:5px;">정답: ${q.answer}</div>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
 }
 
 async function initRender() {
     renderItems();
-    if (window.MathJax) {
+    if (window.MathJax && window.MathJax.typesetPromise) {
         await MathJax.startup.promise;
         await MathJax.typesetPromise([document.body]);
     }
-    // 이중 대기로 폰트/수식 렌더링 완료 후 조판
     requestAnimationFrame(() => requestAnimationFrame(paginate));
 }
 
@@ -92,35 +146,60 @@ function paginate() {
     printArea.innerHTML = '';
     const items = Array.from(document.getElementById('item-pool').querySelectorAll('.item'));
     const isTest = document.body.classList.contains('test-mode');
+    const isAns = document.body.classList.contains('ans-mode');
     
-    let page, itemCount = 0;
-    const addPage = () => {
-        page = document.createElement('div'); page.className = 'page';
-        page.innerHTML = `<div style="border-bottom:2px solid #1e293b; padding-bottom:5px; margin-bottom:10px; font-weight:bold; display:flex; justify-content:space-between;">
-            <span>${AppState.title}</span><span>- ${printArea.children.length + 1} -</span>
-        </div><div class="content-container"></div>`;
+    const addPage = (suffix = "") => {
+        const page = document.createElement('div'); page.className = 'page';
+        page.innerHTML = `
+            <div style="border-bottom:2px solid #1e293b; padding-bottom:5px; margin-bottom:10px; font-weight:bold; display:flex; justify-content:space-between; font-size:10pt;">
+                <span>${AppState.title} ${suffix}</span><span>- ${printArea.children.length + 1} -</span>
+            </div>
+            <div class="content-container"></div>`;
         printArea.appendChild(page);
+        return page;
     };
 
-    addPage();
+    if (isAns) {
+        const page = addPage("[정답표]");
+        let html = `<table class="ans-table">`;
+        const bank = window.questionBank || [];
+        for(let i=0; i<bank.length; i+=5) {
+            html += `<tr>`;
+            for(let j=i; j<i+5; j++) {
+                if(bank[j]) html += `<td class="idx">${j+1}</td><td>${bank[j].answer}</td>`;
+                else html += `<td class="idx"></td><td></td>`;
+            }
+            html += `</tr>`;
+        }
+        html += `</table>`;
+        page.querySelector('.content-container').innerHTML = `<div style="width:100%;">${html}</div>`;
+        return;
+    }
+
+    let currentPage = addPage();
+    let itemCount = 0;
     items.forEach(item => {
-        const container = page.querySelector('.content-container');
         if (isTest) {
-            if (itemCount > 0 && itemCount % 4 === 0) addPage();
-            page.querySelector('.content-container').appendChild(item.cloneNode(true));
+            if (itemCount > 0 && itemCount % 4 === 0) currentPage = addPage();
+            currentPage.querySelector('.content-container').appendChild(item.cloneNode(true));
             itemCount++;
         } else {
-            // 해설지 유동 조판은 기존 높이 체크 로직 유지 (단순화를 위해 여기선 생략)
-            container.appendChild(item.cloneNode(true));
+            currentPage.querySelector('.content-container').appendChild(item.cloneNode(true));
         }
     });
 }
 
-function setMode(mode) { document.body.className = mode; initRender(); }
+function setMode(mode) { 
+    document.body.className = mode; 
+    initRender(); 
+}
 
 (function load() {
     const file = new URLSearchParams(window.location.search).get('data');
-    if (!file) return;
+    if (!file) {
+        document.getElementById('print-area').innerHTML = '<div style="padding:50px; text-align:center;">URL 뒤에 ?data=파일명.js를 입력해주세요.</div>';
+        return;
+    }
     const s = document.createElement('script');
     s.src = file + '?v=' + Date.now();
     s.onload = initRender;
