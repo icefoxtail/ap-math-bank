@@ -3,85 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AP 수학학원 - 스마트 기출 저장소</title>
+    <title>AP 수학학원 - 스마트 기출 자료실</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.min.js"></script>
     <script>
         window.MathJax = {
-            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], macros: { tf: ["\\dfrac{#1}{#2}", 2] } },
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                macros: { 
+                    tf: ["\\dfrac{#1}{#2}", 2] 
+                }
+            },
             options: { renderActions: { addMenu: [] } }
         };
     </script>
     <style>
-        /* [무결성 유지] 형님의 디자인 시스템 */
-        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f8f9fa; --card-bg: #ffffff; --text-main: #333; }
-        body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-main); line-height: 1.6; }
-        .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); min-height: 80vh; }
-        .hero-section { text-align: center; padding: 40px 0; background: linear-gradient(135deg, var(--primary) 0%, #34495e 100%); border-radius: 12px; margin-bottom: 30px; color: white; }
-        .hero-section h1 { color: white; margin: 0; font-size: 28px; font-weight: 800; }
-        .search-container { position: relative; max-width: 600px; margin: -30px auto 30px; }
-        .search-box { width: 100%; padding: 18px 25px; border: none; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-size: 16px; box-sizing: border-box; }
-        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 5px; }
-        .tab-btn { padding: 10px 24px; background: #eee; border: none; border-radius: 30px; cursor: pointer; color: #666; white-space: nowrap; transition: 0.3s; font-weight: 600; }
-        .tab-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(52,152,219,0.3); }
-        .exam-item { display: flex; justify-content: space-between; align-items: center; background: white; margin-bottom: 12px; padding: 18px 25px; border-radius: 12px; border: 1px solid #f1f1f1; text-decoration: none; color: var(--text-main); transition: 0.2s; }
-        .exam-item:hover { transform: translateX(5px); border-color: var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .year-badge { background: #ebf8ff; color: var(--accent); padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 800; margin-right: 12px; border: 1px solid rgba(52,152,219,0.2); min-width: 45px; text-align: center; }
-
-        /* [무결성 유지] 형님의 QUESTION 카드 디자인 */
-        .q-card { margin-bottom: 50px; padding: 35px; border: 1px solid #edf2f7; border-radius: 12px; background: #fff; break-inside: avoid; }
-        .q-num { font-weight: 800; color: var(--accent); margin-bottom: 15px; font-size: 18px; }
-        .ans-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .back-bar { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-
-        /* [핵심] 인쇄 레이아웃 통합 엔진 */
-        #exam-content { column-count: 2; column-gap: 40px; column-fill: auto; }
-
-        @media print {
-            @page { size: A4; margin: 15mm; }
-            .no-print { display: none !important; }
-            body { background: white; padding: 0; }
-            .container { max-width: 100%; box-shadow: none; padding: 0; margin: 0; border: none; }
-            #exam-content { column-count: 2; column-gap: 30px; height: 100%; display: block; }
-            
-            /* [시험지 모드] 정확한 등분 및 세로 정렬 */
-            .mode-exam #exam-content { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 20px; height: 260mm; }
-            .mode-exam-6 .q-card { height: auto; min-height: 80mm; } /* 중등 6등분 */
-            .mode-exam-4 .q-card { height: auto; min-height: 125mm; } /* 고등 4등분 */
-
-            /* [해설지 모드] 유동적 길이 조절 */
-            .mode-solution #exam-content { column-count: 1; display: block; }
-            .mode-solution .q-card { height: auto; margin-bottom: 30px; border-bottom: 1px dashed #ccc; }
-            
-            .ans-box-print { display: block !important; border-left: 2px solid #333 !important; padding: 15px; background: #fff !important; }
-        }
+        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f4f7f6; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        h1 { text-align: center; color: var(--primary); font-size: 24px; margin-bottom: 25px; }
+        .search-box { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; font-size: 16px; }
+        .tabs { display: flex; gap: 10px; border-bottom: 2px solid #eee; margin-bottom: 20px; overflow-x: auto; }
+        .tab-btn { padding: 10px 15px; border: none; background: none; cursor: pointer; font-weight: bold; color: #999; white-space: nowrap; }
+        .tab-btn.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
+        .exam-item { display: block; padding: 15px; border-bottom: 1px solid #f1f1f1; text-decoration: none; color: #333; transition: 0.2s; }
+        .exam-item:hover { background: #f9f9f9; padding-left: 20px; }
+        .q-card { margin-bottom: 40px; padding: 20px; border: 1px solid #eee; border-radius: 10px; position: relative; }
+        .q-num { font-weight: bold; color: var(--accent); font-size: 18px; margin-bottom: 15px; }
+        .q-text { font-size: 17px; margin-bottom: 20px; word-break: keep-all; }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .option { display: flex; align-items: flex-start; gap: 8px; font-size: 16px; }
+        .ans-section { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd; display: none; }
+        .ans-btn { background: #eee; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; color: #666; }
+        .ans-btn:hover { background: #ddd; }
+        #main-view { display: block; }
+        #exam-view { display: none; }
+        .back-bar { margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div class="container no-print" id="main-view">
-    <div class="hero-section">
-        <h1>AP 수학학원 기출 저장소</h1>
-        <p>박준성 선생님의 무결성 기출 분석 시스템</p>
-    </div>
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-box" placeholder="학교명 검색...">
-    </div>
+<div class="container" id="main-view">
+    <h1>AP 수학학원 기출 저장소</h1>
+    <input type="text" id="searchInput" class="search-box" placeholder="학교명 또는 연도 검색...">
     <div class="tabs" id="categoryTabs"></div>
     <div id="examList"></div>
 </div>
 
-<div class="container" id="exam-view" style="display:none;">
-    <div class="back-bar no-print">
+<div class="container" id="exam-view">
+    <div class="back-bar">
         <button class="ans-btn" onclick="location.href=location.pathname">← 목록으로</button>
-        <div style="display:flex; gap:8px;">
-            <button class="ans-btn" style="background:#e67e22;" onclick="setMode('mode-exam mode-exam-6')">중등 시험지(6)</button>
-            <button class="ans-btn" style="background:#e67e22;" onclick="setMode('mode-exam mode-exam-4')">고등 시험지(4)</button>
-            <button class="ans-btn" style="background:#8e44ad;" onclick="setMode('mode-solution')">유동 해설지</button>
-            <button class="ans-btn" style="background:#27ae60;" onclick="window.print()">인쇄 실행</button>
         </div>
-    </div>
-    <div id="exam-content" class="mode-exam mode-exam-6"></div>
+    <div id="exam-content"></div>
 </div>
 
 <script>
@@ -89,14 +62,11 @@
 
     async function init() {
         try {
-            const res = await fetch('db.json?v=' + Date.now());
-            if (!res.ok) throw new Error("db.json 로드 실패");
+            const res = await fetch('db.json');
             dbData = await res.json();
             renderTabs();
-            renderList(Object.keys(dbData.exams)[0]);
-        } catch (e) {
-            document.getElementById('examList').innerHTML = `<p style="color:red; text-align:center;">${e.message}</p>`;
-        }
+            renderList(Object.keys(dbData.exams)[0]); 
+        } catch (e) { alert("db.json 파일을 확인해주세요."); }
     }
 
     function renderTabs() {
@@ -108,90 +78,64 @@
 
     function renderList(cat, filter = '') {
         const listDiv = document.getElementById('examList');
-        if (!dbData || !dbData.exams || !dbData.exams[cat]) return;
-        const data = dbData.exams[cat];
-
-        const process = (exams) => {
-            const examArray = Array.isArray(exams) ? exams : [exams];
-            return examArray.filter(ex => ex && ex.visible !== false && ex.title.includes(filter))
-                .sort((a, b) => b.title.localeCompare(a.title))
-                .map(ex => {
-                    const parts = ex.title.split('_');
-                    const prefix = parts[0];
-                    let badgeText = isNaN(parseInt(prefix)) ? prefix : (parseInt(prefix) >= 15 ? `${prefix}년` : `단원 ${prefix}`);
-                    const rest = parts.slice(1).join(' ').replace(/_/g, ' ').replace('.js', '');
-                    return `<a href="?data=${encodeURIComponent(ex.file)}&title=${encodeURIComponent(ex.title)}" class="exam-item">
-                                <div style="display:flex; align-items:center;">
-                                    <span class="year-badge">${badgeText}</span>
-                                    <span style="font-weight:600;">${rest}</span>
-                                </div>
-                                <span style="color:var(--accent); font-weight:bold; font-size:12px;">OPEN →</span>
-                            </a>`;
-                }).join('');
-        };
-
         let html = '';
+        const data = dbData.exams[cat];
         if (!Array.isArray(data)) {
             for (const [grade, exams] of Object.entries(data)) {
-                html += `<div style="background:#f1f5f9; padding:8px 20px; font-weight:bold; margin:25px 0 12px; border-radius:8px; font-size:13px; color:var(--primary);">● ${grade}</div>`;
-                html += process(exams);
+                html += `<div style="background:#f9f9f9; padding:5px 15px; font-weight:bold; margin-top:15px;">${grade}</div>`;
+                exams.forEach(ex => {
+                    if (ex.title.includes(filter)) html += `<a href="?data=${ex.file}" class="exam-item">${ex.title}</a>`;
+                });
             }
-        } else { html += process(data); }
-        listDiv.innerHTML = html || '<p style="text-align:center; padding:50px;">자료가 없습니다.</p>';
-    }
-
-    function setMode(cls) {
-        document.getElementById('exam-content').className = cls;
-        const boxes = document.querySelectorAll('.ans-box-print');
-        if(cls === 'mode-solution') {
-            boxes.forEach(b => b.style.display = 'block');
-            alert("해설지 모드: 해설 길이에 따라 유동적으로 출력됩니다.");
         } else {
-            boxes.forEach(b => b.style.display = 'none');
-            alert("시험지 모드: 페이지 규격에 맞춰 정확히 등분됩니다.");
+            data.forEach(ex => {
+                if (ex.title.includes(filter)) html += `<a href="?data=${ex.file}" class="exam-item">${ex.title}</a>`;
+            });
         }
+        listDiv.innerHTML = html;
     }
 
-    function render() {
-        const content = document.getElementById('exam-content');
-        if (typeof questionBank === 'undefined') return;
-        content.innerHTML = questionBank.map((q, idx) => `
-            <div class="q-card">
-                <div class="q-num">QUESTION ${idx + 1}</div>
-                <div style="font-size:19px; font-weight:500; margin-bottom:25px; word-break:keep-all;">${q.content}</div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
-                    ${q.choices ? q.choices.map((opt, i) => `<div>${['①','②','③','④','⑤'][i]} ${opt}</div>`).join('') : ''}
-                </div>
-                <div class="ans-box-print" style="margin-top:20px; display:none;">
-                    <b style="color:red">정답: ${q.answer}</b><br>
-                    <div style="font-size:15px; color:#666; margin-top:5px;">${q.solution || '해설이 없습니다.'}</div>
-                </div>
-            </div>
-        `).join('');
-        if (window.MathJax) MathJax.typesetPromise();
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const dataFile = urlParams.get('data');
-    if (dataFile) {
-        document.getElementById('main-view').style.display = 'none';
-        document.getElementById('exam-view').style.display = 'block';
-        const script = document.createElement('script');
-        script.src = decodeURIComponent(dataFile).replace(/(\.js)+$/, '') + '.js?v=' + Date.now();
-        script.onload = () => {
-            if (window.MathJax && MathJax.startup && MathJax.startup.promise) {
-                MathJax.startup.promise.then(render);
-            } else { setTimeout(render, 300); }
-        };
-        document.body.appendChild(script);
-    }
-
-    window.onload = init;
     function changeTab(btn, cat) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderList(cat);
     }
+
+    function render() {
+        const content = document.getElementById('exam-content');
+        if (typeof questionBank === 'undefined') return;
+
+        content.innerHTML = questionBank.map((q, idx) => `
+            <div class="q-card">
+                <div class="q-num">${idx + 1}번</div>
+                <div class="q-text">${q.content}</div>
+                <div class="options-grid">
+                    ${q.choices ? q.choices.map((opt, i) => `<div class="option"><span>${['①','②','③','④','⑤'][i]}</span> <span>${opt}</span></div>`).join('') : ''}
+                </div>
+                <button class="ans-btn" style="margin-top:15px" onclick="this.nextElementSibling.style.display='block'">정답 확인</button>
+                <div class="ans-section">
+                    <b style="color:red">정답: ${q.answer}</b><br>
+                    <small style="color:#666">${q.solution || '해설이 없습니다.'}</small>
+                </div>
+            </div>
+        `).join('');
+        
+        if (window.MathJax) MathJax.typeset();
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const dataFile = urlParams.get('data');
+
+    if (dataFile) {
+        document.getElementById('main-view').style.display = 'none';
+        document.getElementById('exam-view').style.display = 'block';
+        const script = document.createElement('script');
+        script.src = dataFile;
+        script.onload = () => { setTimeout(render, 100); };
+        document.body.appendChild(script);
+    }
+
+    window.onload = init;
     document.getElementById('searchInput').oninput = (e) => {
         const activeTab = document.querySelector('.tab-btn.active').innerText;
         renderList(activeTab, e.target.value);
