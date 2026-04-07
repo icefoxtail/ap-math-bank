@@ -13,6 +13,7 @@
         };
     </script>
     <style>
+        /* [무결성 유지] 형님의 디자인 시스템 */
         :root { --primary: #2c3e50; --accent: #3498db; --bg: #f8f9fa; --card-bg: #ffffff; --text-main: #333; }
         body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-main); line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); min-height: 80vh; }
@@ -26,31 +27,33 @@
         .exam-item { display: flex; justify-content: space-between; align-items: center; background: white; margin-bottom: 12px; padding: 18px 25px; border-radius: 12px; border: 1px solid #f1f1f1; text-decoration: none; color: var(--text-main); transition: 0.2s; }
         .exam-item:hover { transform: translateX(5px); border-color: var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .year-badge { background: #ebf8ff; color: var(--accent); padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 800; margin-right: 12px; border: 1px solid rgba(52,152,219,0.2); min-width: 45px; text-align: center; }
-        
-        /* 인쇄 및 상세 뷰 레이아웃 */
-        #exam-content { column-count: 2; column-gap: 40px; column-fill: auto; }
-        .q-card { 
-            margin-bottom: 20px; padding: 25px; border: 1px solid #edf2f7; border-radius: 12px; background: #fff; 
-            break-inside: avoid; display: flex; flex-direction: column; height: auto;
-        }
-        .q-num { font-weight: 800; color: var(--accent); margin-bottom: 10px; font-size: 16px; border-bottom: 2px solid var(--accent); display: inline-block; width: fit-content; }
-        .ans-btn { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
-        .layout-btn { background: #e67e22; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; }
+
+        /* [무결성 유지] 형님의 QUESTION 카드 디자인 */
+        .q-card { margin-bottom: 50px; padding: 35px; border: 1px solid #edf2f7; border-radius: 12px; background: #fff; break-inside: avoid; }
+        .q-num { font-weight: 800; color: var(--accent); margin-bottom: 15px; font-size: 18px; }
+        .ans-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
         .back-bar { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
 
-        /* 인쇄 설정 (핵심) */
+        /* [핵심] 인쇄 레이아웃 통합 엔진 */
+        #exam-content { column-count: 2; column-gap: 40px; column-fill: auto; }
+
         @media print {
-            body { padding: 0; background: white; }
+            @page { size: A4; margin: 15mm; }
             .no-print { display: none !important; }
-            .container { max-width: 100%; border: none; box-shadow: none; padding: 0; }
-            #exam-content { column-count: 2; column-gap: 30px; height: 1000px; /* 고정 높이로 세로 정렬 강제 */ }
+            body { background: white; padding: 0; }
+            .container { max-width: 100%; box-shadow: none; padding: 0; margin: 0; border: none; }
+            #exam-content { column-count: 2; column-gap: 30px; height: 100%; display: block; }
             
-            /* 중등 6문항 모드 */
-            .print-6 .q-card { height: 310px; margin-bottom: 15px; border: 1px solid #eee; }
-            /* 고등 4문항 모드 */
-            .print-4 .q-card { height: 480px; margin-bottom: 15px; border: 1px solid #eee; }
+            /* [시험지 모드] 정확한 등분 및 세로 정렬 */
+            .mode-exam #exam-content { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 20px; height: 260mm; }
+            .mode-exam-6 .q-card { height: auto; min-height: 80mm; } /* 중등 6등분 */
+            .mode-exam-4 .q-card { height: auto; min-height: 125mm; } /* 고등 4등분 */
+
+            /* [해설지 모드] 유동적 길이 조절 */
+            .mode-solution #exam-content { column-count: 1; display: block; }
+            .mode-solution .q-card { height: auto; margin-bottom: 30px; border-bottom: 1px dashed #ccc; }
             
-            .ans-box { display: block !important; border-left: 2px solid #333 !important; background: #fff !important; }
+            .ans-box-print { display: block !important; border-left: 2px solid #333 !important; padding: 15px; background: #fff !important; }
         }
     </style>
 </head>
@@ -72,13 +75,14 @@
     <div class="back-bar no-print">
         <button class="ans-btn" onclick="location.href=location.pathname">← 목록으로</button>
         <div style="display:flex; gap:8px;">
-            <button class="layout-btn" onclick="setLayout('print-6')">중등(6문항)</button>
-            <button class="layout-btn" onclick="setLayout('print-4')">고등(4문항)</button>
-            <button class="ans-btn" style="background:#27ae60;" onclick="window.print()">인쇄/PDF</button>
-            <button class="ans-btn" onclick="toggleAllAnswers()">정답 토글</button>
+            <button class="ans-btn" style="background:#e67e22;" onclick="setMode('mode-exam mode-exam-6')">중등 시험지(6)</button>
+            <button class="ans-btn" style="background:#e67e22;" onclick="setMode('mode-exam mode-exam-4')">고등 시험지(4)</button>
+            <button class="ans-btn" style="background:#8e44ad;" onclick="setMode('mode-solution')">유동 해설지</button>
+            <button class="ans-btn" style="background:#27ae60;" onclick="window.print()">인쇄 실행</button>
         </div>
     </div>
-    <div id="exam-content" class="print-6"></div> </div>
+    <div id="exam-content" class="mode-exam mode-exam-6"></div>
+</div>
 
 <script>
     let dbData = null;
@@ -104,16 +108,18 @@
 
     function renderList(cat, filter = '') {
         const listDiv = document.getElementById('examList');
+        if (!dbData || !dbData.exams || !dbData.exams[cat]) return;
         const data = dbData.exams[cat];
-        
+
         const process = (exams) => {
             const examArray = Array.isArray(exams) ? exams : [exams];
             return examArray.filter(ex => ex && ex.visible !== false && ex.title.includes(filter))
                 .sort((a, b) => b.title.localeCompare(a.title))
                 .map(ex => {
-                    const prefix = ex.title.split('_')[0];
+                    const parts = ex.title.split('_');
+                    const prefix = parts[0];
                     let badgeText = isNaN(parseInt(prefix)) ? prefix : (parseInt(prefix) >= 15 ? `${prefix}년` : `단원 ${prefix}`);
-                    const rest = ex.title.split('_').slice(1).join(' ').replace('.js', '');
+                    const rest = parts.slice(1).join(' ').replace(/_/g, ' ').replace('.js', '');
                     return `<a href="?data=${encodeURIComponent(ex.file)}&title=${encodeURIComponent(ex.title)}" class="exam-item">
                                 <div style="display:flex; align-items:center;">
                                     <span class="year-badge">${badgeText}</span>
@@ -134,25 +140,31 @@
         listDiv.innerHTML = html || '<p style="text-align:center; padding:50px;">자료가 없습니다.</p>';
     }
 
-    function setLayout(cls) {
-        const content = document.getElementById('exam-content');
-        content.className = cls;
-        alert(cls === 'print-6' ? "중등부(6문항) 모드로 설정되었습니다." : "고등부(4문항) 모드로 설정되었습니다.");
+    function setMode(cls) {
+        document.getElementById('exam-content').className = cls;
+        const boxes = document.querySelectorAll('.ans-box-print');
+        if(cls === 'mode-solution') {
+            boxes.forEach(b => b.style.display = 'block');
+            alert("해설지 모드: 해설 길이에 따라 유동적으로 출력됩니다.");
+        } else {
+            boxes.forEach(b => b.style.display = 'none');
+            alert("시험지 모드: 페이지 규격에 맞춰 정확히 등분됩니다.");
+        }
     }
 
-    function renderQuestions() {
+    function render() {
         const content = document.getElementById('exam-content');
         if (typeof questionBank === 'undefined') return;
         content.innerHTML = questionBank.map((q, idx) => `
             <div class="q-card">
-                <div class="q-num">문항 ${idx + 1}</div>
-                <div style="font-size:17px; margin-bottom:15px; word-break:keep-all;">${q.content}</div>
-                <div style="font-size:15px; display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px;">
+                <div class="q-num">QUESTION ${idx + 1}</div>
+                <div style="font-size:19px; font-weight:500; margin-bottom:25px; word-break:keep-all;">${q.content}</div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
                     ${q.choices ? q.choices.map((opt, i) => `<div>${['①','②','③','④','⑤'][i]} ${opt}</div>`).join('') : ''}
                 </div>
-                <div class="ans-box" style="margin-top:auto; padding:15px; background:#fff9f9; border-left:3px solid #ff4d4d; display:none; font-size:14px;">
+                <div class="ans-box-print" style="margin-top:20px; display:none;">
                     <b style="color:red">정답: ${q.answer}</b><br>
-                    <div style="margin-top:5px; color:#666;">${q.solution || '해설이 없습니다.'}</div>
+                    <div style="font-size:15px; color:#666; margin-top:5px;">${q.solution || '해설이 없습니다.'}</div>
                 </div>
             </div>
         `).join('');
@@ -166,7 +178,11 @@
         document.getElementById('exam-view').style.display = 'block';
         const script = document.createElement('script');
         script.src = decodeURIComponent(dataFile).replace(/(\.js)+$/, '') + '.js?v=' + Date.now();
-        script.onload = renderQuestions;
+        script.onload = () => {
+            if (window.MathJax && MathJax.startup && MathJax.startup.promise) {
+                MathJax.startup.promise.then(render);
+            } else { setTimeout(render, 300); }
+        };
         document.body.appendChild(script);
     }
 
@@ -175,11 +191,6 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderList(cat);
-    }
-    function toggleAllAnswers() {
-        const boxes = document.querySelectorAll('.ans-box');
-        const isHidden = Array.from(boxes).some(b => b.style.display === 'none');
-        boxes.forEach(b => b.style.display = isHidden ? 'block' : 'none');
     }
     document.getElementById('searchInput').oninput = (e) => {
         const activeTab = document.querySelector('.tab-btn.active').innerText;
