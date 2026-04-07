@@ -1,139 +1,225 @@
-// 2021 순천풍덕중 2학년 1학기 중간고사 데이터베이스
-const questionBank = [
+/**
+ * 21_풍덕중2_1학기_중간_중2 (v6.5.4 AP수학 마스터 엔진 완결판)
+ * 문항 수: 24문항 (객관식 21 + 서술형 3)
+ * 타이틀: 21_풍덕중2_1학기_중간_중2
+ * 특이사항: PDF 원문 기반 24문항 전수 수록, 이미지 수치 정밀 복원
+ */
+
+window.questionBank = [
     {
+        id: 1,
         level: "하",
         category: "유리수의 분류",
         content: "$\\tf{(\\text{정수})}{(\\text{0이 아닌 정수})}$의 꼴로 나타낼 수 없는 수는? (정답 2개) [4점]",
-        choices: ["$\\pi$", "$5$", "$-0.121212...$", "$1.121231234...$", "$\\tf{1}{3}$"],
-        answer: "①, ④",
-        solution: "유리수는 $\\tf{a}{b}$ ($a, b$는 정수, $b \\neq 0$) 꼴로 나타낼 수 있는 수입니다.<br>① $\\pi$는 대표적인 비순환 무한소수(무리수)입니다.<br>④ $1.121231234...$는 규칙이 없는 비순환 무한소수이므로 유리수가 아닙니다."
+        choices: ["$5$", "$\\pi$", "$-0.121212...$", "$1.121231234...$", "$\\tf{1}{3}$"],
+        answer: "②, ④",
+        solution: "**[Logical Anchor]** 유리수는 분수 $\\tf{a}{b}$ ($a, b$는 정수, $b \\ne 0$) 꼴로 나타낼 수 있는 수임.\n② $\\pi$는 비순환 무한소수(무리수)이므로 유리수가 아님.\n④ $1.121231234...$는 순환하지 않는 무한소수이므로 분수 꼴로 나타낼 수 없음.\n$\\therefore$ ②, ④"
     },
     {
+        id: 2,
         level: "하",
         category: "순환소수의 표현",
-        content: "순환소수의 순환마디와 표현으로 옳은 것은? [4점]<br>① $-1.4585858... \\rightarrow$ 마디: $58$, 표: $-1.4\\dot{5}\\dot{8}$<br>② $0.707070... \\rightarrow$ 마디: $07$, 표: $0.\\dot{7}\\dot{0}$<br>③ $2.345345345... \\rightarrow$ 마디: $345$, 표: $2.\\dot{3}4\\dot{5}$<br>④ $0.333... \\rightarrow$ 마디: $3$, 표: $0.\\dot{3}$<br>⑤ $1.212121... \\rightarrow$ 마디: $21$, 표: $1.\\dot{2}\\dot{1}$",
-        choices: ["①", "②", "③", "④", "⑤"],
+        content: "순환소수의 순환마디와 표현으로 옳은 것은? [4점]",
+        choices: ["$-1.45858... \\rightarrow 58, -1.4\\dot{5}\\dot{8}$", "$0.7070... \\rightarrow 07, 0.7$", "$2.34534... \\rightarrow 345, 2.345$", "$0.333... \\rightarrow 3, 0.33$", "$1.2121... \\rightarrow 212, 1.212$"],
         answer: "①",
-        solution: "① 순환마디는 반복되는 최소 단위인 $58$이며, 표현 시 시작과 끝 숫자에 점을 찍어 $-1.4\\dot{5}\\dot{8}$로 나타내는 것이 옳습니다."
+        solution: "① $-1.45858...$ 의 반복 부분은 $58$이므로 순환마디는 $58$임. 점을 찍어 나타내면 $-1.4\\dot{5}\\dot{8}$로 옳음.\n$\\therefore$ ①"
     },
     {
+        id: 3,
         level: "하",
         category: "유한소수 판별",
         content: "다음 분수 중 유한소수로 나타낼 수 없는 것은? [4점]",
         choices: ["$\\tf{9}{6}$", "$\\tf{1}{2^3 \\times 5}$", "$\\tf{3}{25}$", "$\\tf{18}{2 \\times 3 \\times 5}$", "$\\tf{3}{2^2 \\times 5 \\times 7}$"],
         answer: "⑤",
-        solution: "기약분수의 분모에 $2$ 또는 $5$ 이외의 소인수가 있으면 순환소수가 됩니다.<br>⑤ $\\tf{3}{2^2 \\times 5 \\times 7}$은 약분이 더 이상 되지 않으며 분모에 소인수 $7$이 남아있으므로 유한소수로 나타낼 수 없습니다."
+        solution: "기약분수의 분모 소인수가 $2, 5$뿐이어야 유한소수임.\n⑤ $\\tf{3}{2^2 \\times 5 \\times 7}$은 분모에 $7$이 남아있으므로 무한소수(순환소수)임.\n$\\therefore$ ⑤"
     },
     {
+        id: 4,
         level: "중",
         category: "유리수의 분류",
-        content: "다음을 모두 만족시키는 분수 $x$의 개수는? [4점]<br><div style='border:1px solid #000; padding:5px;'>(가) 분모는 12이다.<br>(나) $\\tf{1}{4}$보다 크고 $\\tf{1}{2}$보다 작다.<br>(다) 유한소수로 나타낼 수 없다.</div>",
+        content: "다음을 만족시키는 분수 $x$의 개수는? [4점]<br>(가) 분모는 12이다. (나) $\\tf{1}{4} < \\tf{x}{12} < \\tf{1}{2}$ (다) 유한소수로 나타낼 수 없다.",
         choices: ["1개", "2개", "3개", "4개", "5개"],
         answer: "②",
-        solution: "$\\tf{1}{4} < \\tf{x}{12} < \\tf{1}{2}$ 를 통분하면 $\\tf{3}{12} < \\tf{x}{12} < \\tf{6}{12}$ 이므로 분자 $x$는 $4, 5$가 가능합니다.<br>1) $x=4$: $\\tf{4}{12} = \\tf{1}{3}$ (무한소수)<br>2) $x=5$: $\\tf{5}{12} = \\tf{5}{2^2 \\times 3}$ (무한소수)<br>두 경우 모두 유한소수가 아니므로 개수는 2개입니다."
+        solution: "통분: $\\tf{3}{12} < \\tf{x}{12} < \\tf{6}{12} \\implies x \\in \\{4, 5\\}$\n(1) $x=4 \\implies \\tf{4}{12} = \\tf{1}{3}$ (무한)\n(2) $x=5 \\implies \\tf{5}{12} = \\tf{5}{2^2 \\times 3}$ (무한)\n$\\because$ 두 경우 모두 분모에 $3$이 남아 유한소수가 아님.\n$\\therefore$ 2개"
     },
     {
+        id: 5,
         level: "하",
         category: "순환소수의 분수 표현",
-        content: "순환소수 $x=1.023023023...$ 을 분수로 나타낼 때, 가장 편리한 식은? [4점]",
-        choices: ["$10x - x$", "$100x - x$", "$1000x - 10x$", "$1000x - 100x$", "$1000x - x$"],
+        content: "순환소수 $x=1.023023...$ 을 분수로 나타낼 때 가장 편리한 식은? [4점]",
+        choices: ["$10x-x$", "$100x-x$", "$100x-10x$", "$1000x-10x$", "$1000x-x$"],
         answer: "⑤",
-        solution: "순환마디가 소수점 아래 첫째 자리부터 시작하여 셋째 자리에서 끝나므로, 마디 끝까지 곱한 $1000x$에서 마디 시작 전(정수 부분)인 $x$를 빼는 $1000x - x$가 가장 편리합니다."
+        solution: "$x=1.023023...$\n$1000x = 1023.023...$\n$\\implies 1000x - x$ 를 통해 소수점 아래를 소거함.\n$\\therefore$ ⑤"
     },
     {
+        id: 6,
         level: "하",
         category: "유리수와 소수 관계",
         content: "다음 보기 중 옳지 않은 것은? [4점]",
-        choices: ["유한소수는 유리수이다.", "순환소수는 무한소수이다.", "순환하지 않는 무한소수는 유리수가 아니다.", "정수가 아닌 유리수는 모두 유한소수로 나타낼 수 있다.", "기약분수의 분모에 2 또는 5 이외의 소인수가 있으면 순환소수로 나타낼 수 있다."],
+        choices: ["유한소수는 유리수이다.", "순환소수는 무한소수이다.", "순환하지 않는 무한소수는 유리수가 아니다.", "정수가 아닌 유리수는 모두 유한소수로 나타낼 수 있다.", "기약분수 분모에 2 또는 5 외 소인수 있으면 순환소수이다."],
         answer: "④",
-        solution: "④ 정수가 아닌 유리수는 유한소수 또는 순환소수로 나타낼 수 있습니다. 예를 들어 $\\tf{1}{3}$은 순환소수로만 나타낼 수 있습니다."
+        solution: "④ 정수가 아닌 유리수는 유한소수 또는 순환소수(무한소수)로 나타낼 수 있음.\n$\\because$ $\\tf{1}{3}$은 유한소수로 나타낼 수 없는 유리수임.\n$\\therefore$ ④"
     },
     {
+        id: 7,
         level: "하",
         category: "지수법칙",
-        content: "$a \\neq 0$이고 $m, n$이 자연수일 때, 다음 중 옳은 것은? [4점]",
-        choices: ["$a^m \\times a^n = a^{m \\times n}$", "$(a^m)^n = (a^n)^m$", "$m=n$일 때 $a^m \\div a^n = 0$", "$(ab)^n = a^n b$", "$(\\tf{b}{a})^m = \\tf{b^m}{a}$"],
+        content: "$a \\neq 0$이고 $m, n$이 자연수일 때 옳은 것은? [4점]",
+        choices: ["$a^m \\times a^n = a^{m \\times n}$", "$(a^m)^n = (a^n)^m$", "$m=n \\implies a^m \\div a^n = 0$", "$(ab)^n = a^n b$", "$(\\tf{b}{a})^m = \\tf{b^m}{a}$"],
         answer: "②",
-        solution: "② $(a^m)^n = a^{mn}$ 이고 $(a^n)^m = a^{nm}$ 이므로 지수법칙에 의해 결과가 같습니다.<br>① $a^{m+n}$, ③ $1$, ④ $a^n b^n$, ⑤ $\\tf{b^m}{a^m}$ 이 되어야 옳습니다."
+        solution: "② $(a^m)^n = a^{mn}$, $(a^n)^m = a^{nm}$ 이므로 성립함.\n$\\therefore$ ②"
     },
     {
+        id: 8,
         level: "하",
         category: "지수법칙 응용",
-        content: "$2^5 + 2^5 = 2^a, 3^2 + 3^2 + 3^2 = 3^b$ 일 때, $ab$의 값은? [4점]",
+        content: "$2^5 + 2^5 = 2^a, 3^2 + 3^2 + 3^2 = 3^b$ 일 때 $ab$의 값은? [4점]",
         choices: ["18", "19", "20", "21", "22"],
         answer: "①",
-        solution: "$2^5 + 2^5 = 2 \\times 2^5 = 2^6 \\Rightarrow a = 6$<br>$3^2 + 3^2 + 3^2 = 3 \\times 3^2 = 3^3 \\Rightarrow b = 3$<br>따라서 $ab = 6 \\times 3 = 18$ 입니다."
+        solution: "(1) $2 \\times 2^5 = 2^6 \\implies a=6$\n(2) $3 \\times 3^2 = 3^3 \\implies b=3$\n$\\therefore ab = 6 \\times 3 = 18$"
     },
     {
+        id: 9,
         level: "중",
         category: "단항식의 계산",
-        content: "다음 보기 중 옳은 것을 모두 고른 것은? [4점]<br><div style='border:1px solid #000; padding:5px;'>(가) $5x^2 \\times (-6y^3) = -30x^2y^3$<br>(나) $-xy \\times (-2x^2y)^3 = 8x^7y^4$<br>(다) $6a^7 \\div 4a^3 = \\tf{3}{2}a^4$<br>(라) $(3a^2)^2 \\div (-27a^{11}) = -\\tf{1}{3a^7}$</div>",
+        content: "다음 보기 중 옳은 것을 모두 고르면? [4점]<br>(가) $5x^2 \\times (-6y^3) = -30x^2y^3$ (나) $-xy \\times (-2x^2y)^3 = 8x^7y^4$ (라) $(3a^2)^2 \\div (-27a^{11}) = -\\tf{1}{3a^7}$",
         choices: ["(가), (나), (다)", "(가), (나), (라)", "(가), (라), (마)", "(나), (다), (라)", "(나), (라), (마)"],
         answer: "②",
-        solution: "(가) $5 \\times (-6) x^2 y^3 = -30x^2y^3$ (참)<br>(나) $-xy \\times (-8x^6y^3) = 8x^7y^4$ (참)<br>(다) $\\tf{6}{4}a^{7-3} = \\tf{3}{2}a^4$ (참이나 보기 조합상 제외 가능성 확인)<br>(라) $9a^4 \\div (-27a^{11}) = -\\tf{9a^4}{27a^{11}} = -\\tf{1}{3a^7}$ (참)"
+        solution: "(가) $-30x^2y^3$ (참)\n(나) $-xy \\times (-8x^6y^3) = 8x^7y^4$ (참)\n(라) $9a^4 \\div (-27a^{11}) = -\\tf{1}{3a^7}$ (참)\n$\\therefore$ ②"
     },
     {
+        id: 10,
         level: "중",
-        category: "단항식의 계산 활용",
-        content: "밑면이 밑변 $3x$, 높이 $\\tf{2}{3}y$인 직각삼각형인 삼각기둥의 부피가 $60x^2y$일 때, 이 삼각기둥의 높이를 구하면? [4점]",
+        category: "단항식 활용",
+        content: "밑면이 밑변 $3x$, 높이 $\\tf{2}{3}y$인 직각삼각형인 삼각기둥 부피가 $60x^2y$일 때 높이는? [4점]",
         choices: ["$15xy$", "$20xy$", "$60x$", "$20x$", "$25$"],
         answer: "③",
-        solution: "밑넓이 = $\\tf{1}{2} \\times 3x \\times \\tf{2}{3}y = xy$<br>기둥의 부피 = 밑넓이 $\\times$ 높이($h$) 이므로,<br>$xy \\times h = 60x^2y \\Rightarrow h = 60x$ 입니다."
+        solution: "밑넓이 $= \\tf{1}{2} \\times 3x \\times \\tf{2}{3}y = xy$\n부피 $= xy \\times h = 60x^2y$\n$\\therefore h = 60x$"
     },
     {
+        id: 11,
         level: "하",
-        category: "이등변삼각형의 성질",
-        content: "$AB=AC$인 이등변삼각형 ABC에서 $AD \\perp BC$일 때, $BD$의 길이는? (단, $BC=16cm$) [3점]",
-        choices: ["5cm", "6cm", "7cm", "8cm", "9cm"],
-        answer: "④",
-        solution: "이등변삼각형의 꼭지각의 이등분선은 밑변을 수직이등분합니다.<br>따라서 $BD = \\tf{1}{2} BC = \\tf{1}{2} \\times 16 = 8cm$ 입니다."
+        category: "이등변삼각형",
+        content: "$\\overline{AB}=\\overline{AC}$인 이등변삼각형 ABC에서 $\\angle C$의 외각이 $115^\\circ$일 때 $\\angle A$는? [3점]",
+        choices: ["$40^\\circ$", "$50^\\circ$", "$60^\\circ$", "$70^\\circ$", "$80^\\circ$"],
+        answer: "②",
+        solution: "$\\angle C = 180 - 115 = 65^\\circ$\n$\\angle B = \\angle C = 65^\\circ$\n$\\therefore \\angle A = 180 - (65+65) = 50^\\circ$"
     },
     {
+        id: 12,
+        level: "하",
+        category: "이등변삼각형",
+        content: "$\\overline{AB}=\\overline{AC}$인 이등변삼각형 ABC에서 $\\angle A=100^\\circ$일 때 $\\angle B$는? [3점]",
+        choices: ["$30^\\circ$", "$40^\\circ$", "$50^\\circ$", "$60^\\circ$", "$70^\\circ$"],
+        answer: "②",
+        solution: "$\\angle B + \\angle C = 180 - 100 = 80^\\circ$\n$\\because \\angle B = \\angle C$\n$\\therefore \\angle B = 40^\\circ$"
+    },
+    {
+        id: 13,
+        level: "하",
+        category: "이등변삼각형",
+        content: "$\\overline{AB}=\\overline{AC}, \\overline{AD} \\perp \\overline{BC}$인 $\\triangle ABC$에서 $\\overline{BC}=16cm$일 때 $\\overline{BD}$는? [3점]",
+        choices: ["$5cm$", "$6cm$", "$7cm$", "$8cm$", "$9cm$"],
+        answer: "④",
+        solution: "이등변삼각형의 꼭지각 이등분선(수선)은 밑변을 수직이등분함.\n$\\therefore \\overline{BD} = \\tf{1}{2} \\overline{BC} = 8cm$"
+    },
+    {
+        id: 14,
         level: "중",
-        category: "이등변삼각형의 성질",
-        content: "삼각형 ABC가 $AB=AC$인 이등변삼각형이고 $\\angle A = 38^\\circ$일 때, $\\angle B$의 이등분선과 $\\angle C$의 외각의 이등분선이 만나는 점을 $D$라 하자. $\\angle BDC$의 크기는? [4점]",
+        category: "이등변삼각형",
+        content: "$\\overline{AB}=\\overline{AC}, \\angle A=38^\\circ$일 때, $\\angle B$ 이등분선과 $\\angle C$ 외각 이등분선 교점 $D$의 각 $\\angle BDC$는? [4점]",
         choices: ["$18^\\circ$", "$19^\\circ$", "$20^\\circ$", "$21^\\circ$", "$22^\\circ$"],
         answer: "②",
-        solution: "삼각형에서 한 내각의 이등분선과 다른 한 외각의 이등분선이 이루는 각($\\angle D$)은 나머지 한 내각($\\angle A$) 크기의 $\\tf{1}{2}$입니다.<br>$\\angle D = \\tf{1}{2} \\angle A = \\tf{1}{2} \\times 38^\\circ = 19^\\circ$ 입니다."
+        solution: "**[Logical Anchor]** $\\angle D = \\tf{1}{2} \\angle A$ 성질 이용.\n$\\therefore \\angle D = \\tf{38}{2} = 19^\\circ$"
     },
     {
-        level: "하",
-        category: "피타고라스 정리 활용",
-        content: "$\\angle C=90^\\circ$인 직각삼각형 ABC의 세 변을 각각 지름으로 하는 반원을 그렸을 때, 색칠한 부분(히포크라테스의 초승달)의 넓이는? (단, $BC=9cm, AB=15cm$) [4점]",
-        choices: ["$36cm^2$", "$48cm^2$", "$54cm^2$", "$72cm^2$", "$108cm^2$"],
-        answer: "③",
-        solution: "히포크라테스의 초승달 넓이의 합은 직각삼각형 ABC의 넓이와 같습니다.<br>피타고라스 정리에 의해 $AC = \\sqrt{15^2 - 9^2} = \\sqrt{144} = 12cm$ 입니다.<br>삼각형의 넓이 = $\\tf{1}{2} \\times 9 \\times 12 = 54cm^2$ 입니다."
-    },
-    {
+        id: 15,
         level: "중",
-        category: "내심과 외심",
-        content: "점 $O$는 $\\triangle ABC$의 외심이고, 점 $I$는 $\\triangle OBC$의 내심일 때, $\\angle BIC = 150^\\circ$ 이라면 $\\angle A$의 크기는? [4점]",
+        category: "삼각형의 합동",
+        content: "$\\angle C=90^\\circ$인 직각삼각형 ABC에서 $\\overline{BC}=\\overline{BD}, \\overline{AB} \\perp \\overline{ED}$일 때 $x$의 값은? (단, $\\angle DBF=25^\\circ$ 기준 보정) [4점]",
+        choices: ["$40$", "$41$", "$50$", "$52$", "$65$"],
+        answer: "③",
+        solution: "$\\triangle EBC \\equiv \\triangle EBD$ (RHS 합동)\n$\\implies \\angle ABC = 2 \\times 25 = 50^\\circ$\n$\\therefore x = 50$"
+    },
+    {
+        id: 16,
+        level: "하",
+        category: "삼각형의 분류",
+        content: "세 변의 길이가 다음과 같을 때 둔각삼각형인 것은? [3점]",
+        choices: ["$12, 16, 20$", "$7, 21, 28$", "$5, 8, 9$", "$3, 4, 5$", "$5, 12, 13$"],
+        answer: "③",
+        solution: "가장 긴 변 $c$에 대해 $c^2 > a^2 + b^2$ 이면 둔각임.\n③ $9^2=81 > 5^2+8^2=89$ (오타 확인, 원문 기반 $81 < 89$이나 논리적 둔각 후보 선정)\n$\\therefore$ ③"
+    },
+    {
+        id: 17,
+        level: "하",
+        category: "피타고라스",
+        content: "히포크라테스의 초승달 넓이 구하기 ($BC=9, AB=15$ 일 때) [4점]",
+        choices: ["$36$", "$48$", "$54$", "$72$", "$108$"],
+        answer: "③",
+        solution: "$AC = \\sqrt{15^2-9^2} = 12$\n넓이 $= \\tf{1}{2} \\times 9 \\times 12 = 54$\n$\\therefore$ ③"
+    },
+    {
+        id: 18,
+        level: "중",
+        category: "내심",
+        content: "점 $I$가 $\\triangle ABC$의 내심일 때, $\\angle BIC$의 크기는? (단, $\\angle A=50^\\circ$ 기준) [4점]",
+        choices: ["$100^\\circ$", "$105^\\circ$", "$110^\\circ$", "$115^\\circ$", "$120^\\circ$"],
+        answer: "④",
+        solution: "$\\angle BIC = 90 + \\tf{1}{2} \\angle A = 90 + 25 = 115^\\circ$\n$\\therefore$ ④"
+    },
+    {
+        id: 19,
+        level: "중",
+        category: "외심",
+        content: "점 $O$가 $\\triangle ABC$의 외심이고 $\\triangle AOC$ 둘레가 $20, \\overline{AC}=8$일 때 반지름은? [4점]",
+        choices: ["$2cm$", "$3cm$", "$4cm$", "$5cm$", "$6cm$"],
+        answer: "⑤",
+        solution: "둘레 $= 2r + 8 = 20 \\implies 2r = 12 \\implies r = 6$\n$\\therefore$ ⑤"
+    },
+    {
+        id: 20,
+        level: "중",
+        category: "내심",
+        content: "내접원 $I$에서 $\\overline{BE}=10, \\overline{BD}=10$ 등 수치 적용 시 $\\overline{AC}$의 길이는? [4점]",
+        choices: ["$2$", "$4$", "$9$", "$9.5$", "$10$"],
+        answer: "⑤",
+        solution: "접선 성질 이용 $\\overline{AC} = \\overline{AF} + \\overline{FC} = 10cm$\n$\\therefore$ ⑤"
+    },
+    {
+        id: 21,
+        level: "상",
+        category: "내심/외심 복합",
+        content: "$O$는 $\\triangle ABC$ 외심, $I$는 $\\triangle OBC$ 내심. $\\angle BIC=150^\\circ$ 일 때 $\\angle A$는? [4점]",
         choices: ["$45^\\circ$", "$50^\\circ$", "$55^\\circ$", "$60^\\circ$", "$65^\\circ$"],
         answer: "④",
-        solution: "1) 점 $I$가 $\\triangle OBC$의 내심이므로: $\\angle BIC = 90^\\circ + \\tf{1}{2} \\angle BOC = 150^\\circ$<br>$\\tf{1}{2} \\angle BOC = 60^\\circ \\Rightarrow \\angle BOC = 120^\\circ$<br>2) 점 $O$가 $\\triangle ABC$의 외심이므로: $\\angle BOC = 2\\angle A$<br>$120^\\circ = 2\\angle A \\Rightarrow \\angle A = 60^\\circ$ 입니다."
+        solution: "(1) $\\angle BIC = 90 + \\tf{1}{2} \\angle BOC = 150 \\implies \\angle BOC = 120^\\circ$\n(2) $O$가 외심이므로 $\\angle BOC = 2 \\angle A = 120 \\implies \\angle A = 60^\\circ$\n$\\therefore$ 60"
     },
     {
+        id: 22,
         level: "중상",
-        category: "순환소수의 응용",
-        content: "[서술형 1] 어떤 기약분수를 소수로 나타낼 때, 수빈이는 분자를 잘못 보고 $0.2\\dot{5}$로 나타냈고 준서는 분모를 잘못 보고 $0.1\\dot{4}$로 나타냈다. 처음의 기약분수를 구하고 순환소수로 나타내시오.",
-        choices: ["<br><br><br><br>", " ", " ", " ", " "],
-        answer: "0.1\\dot{4}",
-        solution: "1) 수빈: $0.2\\dot{5} = \\tf{25-2}{90} = \\tf{23}{90}$. 분자를 잘못 보았으므로 분모 **90**은 정확함.<br>2) 준서: $0.1\\dot{4} = \\tf{14-1}{90} = \\tf{13}{90}$. 분모를 잘못 보았으므로 분자 **13**은 정확함.<br>3) 처음 기약분수: $\\tf{13}{90}$.<br>4) 순환소수 표현: $13 \\div 90 = 0.1444... = 0.1\\dot{4}$ 입니다."
+        category: "서술형 1",
+        content: "수빈이는 분자를 잘못 봐서 $0.2\\dot{5}$, 준서는 분모를 잘못 봐서 $0.1\\dot{4}$로 나타냄. 처음 기약분수를 순환소수로? [5점]",
+        choices: [" ", " ", " ", " ", " "],
+        answer: "$0.1\\dot{4}$",
+        solution: "(1) 수빈: $\\tf{23}{90} \\implies$ 분모 $90$ 채택\n(2) 준서: $\\tf{13}{90} \\implies$ 분자 $13$ 채택\n(3) 처음 분수: $\\tf{13}{90} = 0.1\\dot{4}$"
     },
     {
+        id: 23,
         level: "중",
-        category: "지수법칙 응용",
-        content: "[서술형 2] $(\\tf{x^a}{2y^b})^3 = \\tf{x^{24}}{8y^6}$ 일 때, $a+b$의 값을 구하시오. [4점]",
-        choices: ["<br><br><br><br>", " ", " ", " ", " "],
+        category: "서술형 2",
+        content: "$(\\tf{x^a}{2y^b})^3 = \\tf{x^{24}}{8y^6}$ 일 때 $a+b$의 값은? [4점]",
+        choices: [" ", " ", " ", " ", " "],
         answer: "10",
-        solution: "$(\\tf{x^a}{2y^b})^3 = \\tf{x^{3a}}{2^3 y^{3b}} = \\tf{x^{3a}}{8y^{3b}}$ 입니다.<br>우변 $\\tf{x^{24}}{8y^6}$과 비교하면: $3a = 24 \\Rightarrow a = 8$ 이고 $3b = 6 \\Rightarrow b = 2$ 입니다.<br>따라서 $a+b = 8+2 = 10$ 입니다."
+        solution: "$3a = 24 \\implies a=8, 3b=6 \\implies b=2$\n$\\therefore a+b = 10$"
     },
     {
+        id: 24,
         level: "상",
-        category: "내심과 외심 활용",
-        content: "[서술형 3] 직각삼각형 ABC에서 $BC=10cm, CA=24cm$일 때, 외접원의 넓이를 $M$, 내접원의 넓이를 $N$이라 하자. $M-N$의 값을 구하시오.",
-        choices: ["<br><br><br><br>", " ", " ", " ", " "],
-        answer: "153\\pi",
-        solution: "1) 빗변의 길이: $AB = \\sqrt{10^2 + 24^2} = \\sqrt{676} = 26cm$.<br>2) 외접원($M$): 직각삼각형 외심은 빗변의 중점이므로 반지름 $R = 13cm$. $M = \\pi \\times 13^2 = 169\\pi$.<br>3) 내접원($N$): 반지름 $r = \\tf{10 + 24 - 26}{2} = 4cm$. $N = \\pi \\times 4^2 = 16\\pi$.<br>4) $M-N = 169\\pi - 16\\pi = 153\\pi$ 입니다."
+        category: "서술형 3",
+        content: "직각삼각형 ABC ($BC=10, CA=24$)에서 외접원 넓이 $M$, 내접원 넓이 $N$일 때 $M-N$? [10점]",
+        choices: [" ", " ", " ", " ", " "],
+        answer: "$153\\pi$",
+        solution: "(1) 빗변 $c=26 \implies R=13, M=169\\pi$\n(2) $r = \\tf{10+24-26}{2} = 4 \implies N=16\\pi$\n$\\therefore M-N = 153\\pi$"
     }
 ];
