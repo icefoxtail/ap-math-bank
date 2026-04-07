@@ -2,150 +2,194 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AP 수학학원 - 스마트 기출 자료실</title>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.min.js"></script>
+    <title>AP수학 마스터 엔진 v6.5.3 - 박스 태그 지원 모드</title>
     <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                macros: { 
-                    tf: ["\\dfrac{#1}{#2}", 2] 
-                }
-            },
-            options: { renderActions: { addMenu: [] } }
-        };
-    </script>
-    <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f4f7f6; }
-        body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; line-height: 1.6; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        h1 { text-align: center; color: var(--primary); font-size: 24px; margin-bottom: 25px; }
-        .search-box { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; font-size: 16px; }
-        .tabs { display: flex; gap: 10px; border-bottom: 2px solid #eee; margin-bottom: 20px; overflow-x: auto; }
-        .tab-btn { padding: 10px 15px; border: none; background: none; cursor: pointer; font-weight: bold; color: #999; white-space: nowrap; }
-        .tab-btn.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
-        .exam-item { display: block; padding: 15px; border-bottom: 1px solid #f1f1f1; text-decoration: none; color: #333; transition: 0.2s; }
-        .exam-item:hover { background: #f9f9f9; padding-left: 20px; }
-        .q-card { margin-bottom: 40px; padding: 20px; border: 1px solid #eee; border-radius: 10px; position: relative; }
-        .q-num { font-weight: bold; color: var(--accent); font-size: 18px; margin-bottom: 15px; }
-        .q-text { font-size: 17px; margin-bottom: 20px; word-break: keep-all; }
-        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
-        .option { display: flex; align-items: flex-start; gap: 8px; font-size: 16px; }
-        .ans-section { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ddd; display: none; }
-        .ans-btn { background: #eee; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; color: #666; }
-        .ans-btn:hover { background: #ddd; }
-        #main-view { display: block; }
-        #exam-view { display: none; }
-        .back-bar { margin-bottom: 20px; }
-    </style>
-</head>
-<body>
+        let globalExamTitle = "";
 
-<div class="container" id="main-view">
-    <h1>AP 수학학원 기출 저장소</h1>
-    <input type="text" id="searchInput" class="search-box" placeholder="학교명 또는 연도 검색...">
-    <div class="tabs" id="categoryTabs"></div>
-    <div id="examList"></div>
-</div>
+        // 🛡️ [보안 유지 + 태그 허용] 특정 레이아웃 태그는 통과하도록 개선
+        function secureFormat(text) {
+            if (!text) return "";
+            return text.split(/(\$[\s\S]*?\$)/g).map(part => {
+                if (part.startsWith('$')) return part;
+                let escaped = part.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
+                // 💡 준성님이 자주 쓰시는 태그들만 안전하게 복구
+                escaped = escaped.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+                escaped = escaped.replace(/&lt;div(.*?)&gt;/gi, '<div$1>'); // div 허용 (스타일 포함)
+                escaped = escaped.replace(/&lt;\/div&gt;/gi, '</div>');     // div 닫기 허용
+                escaped = escaped.replace(/&lt;span(.*?)&gt;/gi, '<span$1>'); // span 허용
+                escaped = escaped.replace(/&lt;\/span&gt;/gi, '</span>');   // span 닫기 허용
+                escaped = escaped.replace(/&lt;b&gt;/gi, '<b>').replace(/&lt;\/b&gt;/gi, '</b>'); // 볼드 허용
 
-<div class="container" id="exam-view">
-    <div class="back-bar">
-        <button class="ans-btn" onclick="location.href=location.pathname">← 목록으로</button>
-        <button class="ans-btn" style="float:right" onclick="toggleAllAnswers()">정답 모두 보기</button>
-    </div>
-    <div id="exam-content"></div>
-</div>
+                return escaped.replace(/([^\s])=([^\s])/g, '$1 = $2').replace(/([^\s])\+([^\s])/g, '$1 + $2');
+            }).join('');
+        }
 
-<script>
-    let dbData = null;
+        function showError(mainMsg, dynamicInfo = "") {
+            const area = document.getElementById('print-area');
+            area.innerHTML = '';
+            const box = document.createElement('div');
+            box.style = "margin-top:100px; text-align:center; padding:40px; background:#fff; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.1); border:2px solid #ef4444; max-width:500px; margin-left:auto; margin-right:auto;";
+            const content = document.createElement('div');
+            content.style = "color:#64748b; font-size:14px; line-height:1.6; white-space: pre-wrap;";
+            content.innerHTML = `<div style="font-size:40px; margin-bottom:20px;">⚠️</div><div style="color:#ef4444; font-weight:800; font-size:18px; margin-bottom:10px;">작업 중 오류 발생</div><div style="font-weight:700; color:#1e293b;">${mainMsg}</div><div style="color:#ef4444; font-family:monospace; background:#fef2f2; padding:5px; margin:10px 0; border-radius:4px;">${dynamicInfo}</div>`;
+            const btn = document.createElement('button');
+            btn.style = "margin-top:20px; padding:8px 20px; background:#3b82f6; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:600;";
+            btn.textContent = "다시 시도";
+            btn.onclick = () => location.reload();
+            box.append(content, btn);
+            area.appendChild(box);
+        }
 
-    async function init() {
-        try {
-            const res = await fetch('db.json');
-            dbData = await res.json();
-            renderTabs();
-            renderList(Object.keys(dbData.exams)[0]); 
-        } catch (e) { alert("db.json 파일을 확인해주세요."); }
-    }
-
-    function renderTabs() {
-        const container = document.getElementById('categoryTabs');
-        container.innerHTML = Object.keys(dbData.exams).map((cat, i) => 
-            `<button class="tab-btn ${i===0?'active':''}" onclick="changeTab(this, '${cat}')">${cat}</button>`
-        ).join('');
-    }
-
-    function renderList(cat, filter = '') {
-        const listDiv = document.getElementById('examList');
-        let html = '';
-        const data = dbData.exams[cat];
-        if (!Array.isArray(data)) {
-            for (const [grade, exams] of Object.entries(data)) {
-                html += `<div style="background:#f9f9f9; padding:5px 15px; font-weight:bold; margin-top:15px;">${grade}</div>`;
-                exams.forEach(ex => {
-                    if (ex.title.includes(filter)) html += `<a href="?data=${ex.file}" class="exam-item">${ex.title}</a>`;
-                });
-            }
-        } else {
-            data.forEach(ex => {
-                if (ex.title.includes(filter)) html += `<a href="?data=${ex.file}" class="exam-item">${ex.title}</a>`;
+        async function loadData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let fileName = urlParams.get('data');
+            if (!fileName) { showError("데이터 파일(?data=파일명.js)이 지정되지 않았습니다."); throw new Error(); }
+            fileName = fileName.trim();
+            if (fileName.includes('..')) { showError("보안 위험이 감지되었습니다.", fileName); throw new Error(); }
+            globalExamTitle = fileName.replace(/\.js$/i, "");
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = fileName; 
+                script.onload = () => {
+                    let finalData = null;
+                    try {
+                        if (typeof questionBank !== 'undefined') finalData = questionBank;
+                        else if (typeof window.questionBank !== 'undefined') finalData = window.questionBank;
+                        else if (typeof questions !== 'undefined') finalData = questions;
+                        else if (typeof data !== 'undefined') finalData = data;
+                    } catch (e) { console.error(e); }
+                    if (!finalData || !Array.isArray(finalData)) { showError("파일 내 문항 데이터를 찾을 수 없습니다.", fileName); reject(); } 
+                    else { window.questionBank = finalData; resolve(); }
+                };
+                script.onerror = () => { showError("파일 로딩 실패 (파일명 확인)", fileName); reject(); };
+                document.head.appendChild(script);
             });
         }
-        listDiv.innerHTML = html;
-    }
 
-    function changeTab(btn, cat) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderList(cat);
-    }
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], processEscapes: true, macros: { tf: ['\\tfrac{#1}{#2}', 2] } },
+            chtml: { scale: 1.08, minScale: 0.8, mtextInheritFont: true },
+            startup: { typeset: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <style>
+        @font-face { font-family: 'KoPubBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/KoPubBatangMedium.woff') format('woff'); }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'KoPubBatang', serif; font-size: 9.5pt; background: #f1f5f9; color: #1e293b; letter-spacing: -0.5px; }
+        #mode-ctrl { position: fixed; top: 20px; left: 20px; z-index: 10000; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); color: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); }
+        #mode-ctrl button { cursor: pointer; padding: 8px 14px; border: none; border-radius: 6px; font-weight: 600; margin-right: 6px; font-size: 11px; transition: all 0.2s; }
+        .page { width: 210mm; height: 297mm; padding: 15mm 15mm; margin: 10mm auto; background: #fff; position: relative; overflow: hidden; page-break-after: always; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; margin-bottom: 5mm; padding-bottom: 2mm; font-weight: 800; font-size: 11pt; }
+        .header-left { color: #1e293b; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .header-right { color: #3b82f6; }
+        .content-container { display: flex; justify-content: space-between; height: 260mm; }
+        .col-left, .col-right { width: 49.5%; height: 100%; overflow: hidden; }
+        .col-left { border-right: 1px solid #f1f5f9; padding-right: 6mm; }
+        .col-right { padding-left: 6mm; }
 
-    // [교정 포인트] 데이터 필드명 동기화: content, choices, solution
-    function render() {
-        const content = document.getElementById('exam-content');
-        if (typeof questionBank === 'undefined') return;
+        /* 💡 팁: 앞으로는 긴 스타일 대신 class="box"를 써보세요! */
+        .box { border: 1px solid #1e293b; padding: 10px; margin: 10px 0; border-radius: 4px; background: #fff; line-height: 1.8; }
 
-        content.innerHTML = questionBank.map((q, idx) => `
-            <div class="q-card">
-                <div class="q-num">${idx + 1}번</div>
-                <div class="q-text">${q.content}</div>
-                <div class="options-grid">
-                    ${q.choices ? q.choices.map((opt, i) => `<div class="option"><span>${['①','②','③','④','⑤'][i]}</span> <span>${opt}</span></div>`).join('') : ''}
-                </div>
-                <button class="ans-btn" style="margin-top:15px" onclick="this.nextElementSibling.style.display='block'">정답 확인</button>
-                <div class="ans-section">
-                    <b style="color:red">정답: ${q.answer}</b><br>
-                    <small style="color:#666">${q.solution || '해설이 없습니다.'}</small>
-                </div>
-            </div>
-        `).join('');
-        
-        if (window.MathJax) MathJax.typeset();
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const dataFile = urlParams.get('data');
-
-    if (dataFile) {
-        document.getElementById('main-view').style.display = 'none';
-        document.getElementById('exam-view').style.display = 'block';
-        const script = document.createElement('script');
-        script.src = dataFile;
-        script.onload = () => { setTimeout(render, 100); };
-        document.body.appendChild(script);
-    }
-
-    function toggleAllAnswers() {
-        document.querySelectorAll('.ans-section').forEach(s => s.style.display = 'block');
-    }
-
-    window.onload = init;
-    document.getElementById('searchInput').oninput = (e) => {
-        const activeTab = document.querySelector('.tab-btn.active').innerText;
-        renderList(activeTab, e.target.value);
-    };
-</script>
+        .content { line-height: 2.0; }
+        body.test-mode .item { height: 130mm; border-bottom: 1px solid #f8fafc; padding-top: 3mm; overflow: hidden; }
+        body.sol-mode .item { height: auto; padding-bottom: 6mm; border-bottom: 1px solid #f1f5f9; }
+        .sol-label { font-weight: bold; color: #3b82f6; font-size: 8.5pt; display: block; margin-bottom: 6px; }
+        .sol-content { display: block; width: 100%; line-height: 2.0; font-size: 9pt; color: #475569; }
+        .num { font-weight: 900; font-size: 11pt; color: #3b82f6; margin-right: 6px; }
+        .choices { width: 100%; margin-top: 4mm; border-collapse: collapse; font-size: 9pt; }
+        .choices td { padding: 5px 0; vertical-align: top; }
+        body.test-mode .sol-box { display: none !important; }
+        .sol-box { margin-top: 8px; padding: 12px 16px; border-radius: 8px; background: #f8fafc; border-left: 4px solid #3b82f6; }
+        .sol-ans { font-weight: 800; color: #ef4444; font-size: 9.5pt; margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 8px; display: block; }
+        @media print { #mode-ctrl { display: none !important; } body { background: none; } .page { margin: 0; box-shadow: none; border: none; } }
+    </style>
+</head>
+<body class="test-mode">
+    <div id="mode-ctrl">
+        <div style="margin-bottom:8px; font-weight:800; color:#3b82f6; font-size:13px;">AP MATH v6.5.3 [BOX]</div>
+        <button onclick="changeMode('test-mode')" id="btn-test" style="background:#3b82f6; color:#fff;">학생용</button>
+        <button onclick="changeMode('sol-mode')" id="btn-sol" style="background:#64748b; color:#fff;">해설용</button>
+        <button onclick="window.print()" style="background:#10b981; color:#fff;">인쇄하기</button>
+    </div>
+    <div id="print-area"></div>
+    <div id="item-pool" style="display:none;"></div>
+    <script>
+        function renderItems() {
+            const pool = document.getElementById('item-pool');
+            pool.innerHTML = '';
+            const data = window.questionBank || [];
+            data.forEach((q, i) => {
+                const item = document.createElement('div');
+                item.className = 'item';
+                const safeChoices = (q.choices || []).map(c => secureFormat(c));
+                const isShortChoice = safeChoices.length === 5 && safeChoices[0] !== " ";
+                const isVerticalNeed = safeChoices.some(c => c.length > 25);
+                let choiceSection = "";
+                if (isShortChoice) {
+                    if (isVerticalNeed) {
+                        choiceSection = `<table class="choices"><tr><td>① ${safeChoices[0]}</td></tr><tr><td>② ${safeChoices[1]}</td></tr><tr><td>③ ${safeChoices[2]}</td><td>④ ${safeChoices[3]}</td></tr><tr><td>⑤ ${safeChoices[4]}</td></tr></table>`;
+                    } else {
+                        choiceSection = `<table class="choices"><tr><td>① ${safeChoices[0]}</td><td>② ${safeChoices[1]}</td></tr><tr><td>③ ${safeChoices[2]}</td><td>④ ${safeChoices[3]}</td></tr><tr><td colspan="2">⑤ ${safeChoices[4]}</td></tr></table>`;
+                    }
+                } else {
+                    choiceSection = `<div style="height:110px; border:1px dashed #e2e8f0; margin-top:8px; border-radius:6px; padding:10px; color:#94a3b8; font-size:8pt; text-align:center; display:flex; align-items:center; justify-content:center;">풀이 기록란</div>`;
+                }
+                item.innerHTML = `<div class="q-box"><span class="num">${i + 1}</span><span class="content">${secureFormat(q.content)}</span>${choiceSection}</div><div class="sol-box"><span class="sol-label">SOLUTION</span><div class="sol-content">${secureFormat(q.solution)}</div><div class="sol-ans">정답: ${secureFormat(String(q.answer))}</div></div>`;
+                pool.appendChild(item);
+            });
+        }
+        async function paginate() {
+            const area = document.getElementById('print-area');
+            area.innerHTML = '<div style="padding:100px; text-align:center;">박스 레이아웃 최적화 중...</div>';
+            try {
+                await document.fonts.ready;
+                if (window.MathJax && window.MathJax.startup) { await window.MathJax.startup.promise; }
+                area.innerHTML = '';
+                renderItems();
+            } catch (e) { showError("리소스를 불러오는 데 실패했습니다."); return; }
+            const items = Array.from(document.querySelectorAll('#item-pool .item'));
+            if (items.length === 0) return;
+            let pNum = 1, currentP = createPage(pNum);
+            let currentTarget = currentP.left;
+            for (let i = 0; i < items.length; i++) {
+                const cln = items[i].cloneNode(true);
+                if (document.body.className === 'test-mode') {
+                    let target = (i % 4 < 2) ? currentP.left : currentP.right;
+                    target.appendChild(cln);
+                    if ((i + 1) % 4 === 0 && i !== items.length - 1) { pNum++; currentP = createPage(pNum); }
+                } else {
+                    currentTarget.appendChild(cln);
+                    if (currentTarget.scrollHeight > currentTarget.clientHeight + 5) {
+                        currentTarget.removeChild(cln);
+                        if (currentTarget === currentP.left) {
+                            currentTarget = currentP.right; currentTarget.appendChild(cln);
+                            if (currentTarget.scrollHeight > currentTarget.clientHeight + 5) {
+                                currentTarget.removeChild(cln); pNum++; currentP = createPage(pNum); currentTarget = currentP.left; currentTarget.appendChild(cln);
+                            }
+                        } else { pNum++; currentP = createPage(pNum); currentTarget = currentP.left; currentTarget.appendChild(cln); }
+                    }
+                }
+            }
+            if (window.MathJax && window.MathJax.typesetPromise) { await window.MathJax.typesetPromise([area]); }
+        }
+        function createPage(n) {
+            const p = document.createElement('div'); p.className = 'page';
+            const displayTitle = document.body.className === 'sol-mode' ? globalExamTitle + " [해설]" : globalExamTitle;
+            p.innerHTML = `<div class="header"><span class="header-left">${displayTitle}</span><span class="header-right">AP수학학원</span></div><div class="content-container"><div class="col-left"></div><div class="col-right"></div></div><div style="position:absolute; bottom:8mm; left:50%; transform:translateX(-50%); font-size:8pt; color:#94a3b8;">- ${n} -</div>`;
+            document.getElementById('print-area').appendChild(p);
+            return { left: p.querySelector('.col-left'), right: p.querySelector('.col-right') };
+        }
+        function changeMode(mode) {
+            document.body.className = mode;
+            document.getElementById('btn-test').style.background = (mode === 'test-mode' ? '#3b82f6' : '#64748b');
+            document.getElementById('btn-sol').style.background = (mode === 'sol-mode' ? '#3b82f6' : '#64748b');
+            paginate();
+        }
+        window.onload = async () => {
+            try { await loadData(); await paginate(); } catch (e) { console.error(e); }
+        };
+    </script>
 </body>
 </html>
