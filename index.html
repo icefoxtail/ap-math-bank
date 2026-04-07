@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>AP수학 마스터 엔진 v6.9.5 - THE ULTIMATE MASTER</title>
+    <title>AP수학 마스터 엔진 v6.9.6 - GOLDEN-COMPLETE</title>
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff" as="font" type="font/woff2" crossorigin>
     <script>
         window.MathJax = {
@@ -17,35 +17,25 @@
         @page { size: A4; margin: 0; }
         * { box-sizing: border-box; }
         body { margin: 0; padding: 0; font-family: 'Nanum Myeongjo', serif; font-size: 9.5pt; background: #f1f5f9; color: #1e293b; letter-spacing: -0.5px; }
-        
         .fav-btn { cursor: pointer; color: #cbd5e1; font-size: 14pt; transition: 0.2s; margin-right: 8px; vertical-align: middle; user-select: none; }
         .fav-btn.active { color: #f59e0b; }
-        
         .page { width: 210mm; height: 297mm; padding: 15mm; margin: 0 auto; background: #fff; position: relative; overflow: hidden; page-break-after: always; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; margin-bottom: 5mm; padding-bottom: 2mm; font-weight: 800; font-size: 11pt; flex-shrink: 0; }
         .content-container { display: flex; justify-content: space-between; flex: 1; overflow: hidden; }
-        
-        /* 해설 모드 전용 스타일 */
         body.sol-mode .content-container, body.sol-mode .col-left, body.sol-mode .col-right { overflow: visible; height: auto; }
-        
         .col-left, .col-right { width: 49.5%; height: 100%; overflow: hidden; }
         .col-left { border-right: 1px solid #f1f5f9; padding-right: 6mm; }
         .col-right { padding-left: 6mm; }
-
         .item { position: relative; padding-top: 3mm; border-bottom: 1px solid #f8fafc; break-inside: avoid; page-break-inside: avoid; }
         body.test-mode .item { height: 130mm; overflow: hidden; }
         body.sol-mode .item { height: auto; padding-bottom: 6mm; }
-        
         .num { font-weight: 900; font-size: 11pt; color: #3b82f6; }
         .sol-box { margin-top: 8px; padding: 12px 16px; border-radius: 8px; background: #f8fafc; border-left: 4px solid #3b82f6; display: none; }
         body.sol-mode .sol-box { display: block; }
-
-        /* 정답표(Answer Key) 디자인 */
         .answer-sheet { margin-top: 10mm; padding: 15px; border: 2px solid #3b82f6; border-radius: 10px; display: none; }
         body.sol-mode .answer-sheet { display: block; }
         .ans-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 12px; }
         .ans-item { font-size: 9.5pt; font-weight: 700; border-bottom: 1px solid #f1f5f9; padding: 4px; color: #1e293b; }
-
         #mode-ctrl { position: fixed; top: 10px; right: 10px; z-index: 999; display: flex; gap: 8px; }
         #mode-ctrl button { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .btn-test { background: #3b82f6; color: white; }
@@ -68,7 +58,6 @@
 const AppState = { title: "AP 수학학원", fileKey: "", favorites: JSON.parse(localStorage.getItem('ap_favs') || '{}') };
 let isPrintWarned = false;
 
-/* [최종 교정: 비동기 모드 전환] */
 async function setMode(mode) { 
     if (document.body.className === mode) return;
     document.body.className = mode; 
@@ -103,7 +92,6 @@ function secureFormat(text) {
     return res;
 }
 
-/* [최종 교정: 정답표 생성 로직 완전 통합] */
 function renderItems() {
     const pool = document.getElementById('item-pool');
     pool.innerHTML = '';
@@ -114,17 +102,7 @@ function renderItems() {
         const isFav = AppState.favorites[qId] ? 'active' : '';
         const item = document.createElement('div');
         item.className = 'item';
-        item.innerHTML = `
-            <div class="q-box">
-                <span class="fav-btn ${isFav}" onclick="toggleFav('${qId}', this)">★</span>
-                <span class="num">${i + 1}</span>
-                <span class="content">${secureFormat(q.content)}</span>
-            </div>
-            <div class="sol-box">
-                <div style="font-weight:bold; color:#3b82f6; margin-bottom:4px; font-size:8.5pt;">SOLUTION</div>
-                <div style="font-size:9pt; color:#475569;">${secureFormat(q.solution)}</div>
-                <div style="color:#ef4444; font-weight:800; margin-top:8px; border-top:1px dashed #cbd5e1; padding-top:8px;">정답: ${secureFormat(String(q.answer))}</div>
-            </div>`;
+        item.innerHTML = `<div class="q-box"><span class="fav-btn ${isFav}" onclick="toggleFav('${qId}', this)">★</span><span class="num">${i + 1}</span><span class="content">${secureFormat(q.content)}</span></div><div class="sol-box"><div style="font-weight:bold; color:#3b82f6; margin-bottom:4px; font-size:8.5pt;">SOLUTION</div><div style="font-size:9pt; color:#475569;">${secureFormat(q.solution)}</div><div style="color:#ef4444; font-weight:800; margin-top:8px; border-top:1px dashed #cbd5e1; padding-top:8px;">정답: ${secureFormat(String(q.answer))}</div></div>`;
         pool.appendChild(item);
     });
 
@@ -137,7 +115,6 @@ function renderItems() {
     pool.appendChild(ansSheet);
 }
 
-/* [최종 교정: 무결성 조판 엔진] */
 async function paginate() {
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     const printArea = document.getElementById('print-area');
@@ -186,13 +163,21 @@ function showStatus(msg, isError = false) {
 (function loadControl() {
     const params = new URLSearchParams(window.location.search);
     const dataFile = params.get('data');
-    if (!dataFile || !dataFile.match(/^[a-zA-Z0-9_\-\.]+\.js$/)) { showStatus("잘못된 파일 형식입니다.", true); return; }
+    if (!dataFile) return;
+
+    // [교정] 한글 파일명 전면 허용 패치 (Hangeul Liberty Patch)
+    if (!dataFile.match(/^[a-zA-Z0-9가-힣_\-\.]+\.js$/)) { 
+        showStatus("파일명에 허용되지 않는 특수문자가 있습니다. (영어/숫자/한글/하이픈/언더바 가능)", true); 
+        return; 
+    }
+    
     AppState.fileKey = dataFile.split('.')[0];
     AppState.title = decodeURIComponent(params.get('title') || "AP 수학학원 기출");
+    
     const script = document.createElement('script');
     script.src = dataFile + '?v=' + Date.now();
     script.onload = initRender;
-    script.onerror = () => showStatus(`파일(${dataFile}) 로드 실패.`, true);
+    script.onerror = () => showStatus(`파일(${dataFile}) 로드 실패. 경로와 이름을 확인하세요.`, true);
     document.body.appendChild(script);
 })();
 </script>
