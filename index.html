@@ -95,7 +95,7 @@
         const rawTitle = params.get('title') || "";
         const title = decodeURIComponent(rawTitle);
 
-        if (file) showDetail(file, title);
+        if (file) showDetail(decodeURIComponent(file), title);
         else showList();
     }
 
@@ -135,7 +135,7 @@
     }
 
     function navigateDetail(file, title) {
-        const url = `?data=${file}&title=${encodeURIComponent(title)}`;
+        const url = `?data=${encodeURIComponent(file)}&title=${encodeURIComponent(title)}`;
         window.history.pushState({file, title}, title, url);
         showDetail(file, title);
     }
@@ -146,10 +146,8 @@
         renderList();
     }
 
-    // 🔍 [v9.4 핵심 수정] 에러 핸들링 강화 로직
+    // 🔍 [v9.5 최종 해결] 한글 및 공백 파일명 호환성 강화
     function showDetail(file, title) {
-        if (!file.match(/^[a-zA-Z0-9_\-\.]+$/)) return;
-        
         document.getElementById('listView').style.display = 'none';
         document.getElementById('detailView').style.display = 'block';
         document.getElementById('examHeader').innerHTML = `<h2 style="margin:0;">${title.replace(/_/g, ' ')}</h2>`;
@@ -162,10 +160,11 @@
 
         const script = document.createElement('script');
         script.id = 'examDataScript';
+        
+        // 파일명에서 중복된 .js 제거 및 경로 설정
         const safePath = file.replace(/(\.js)+$/, '') + '.js';
         script.src = safePath + '?v=' + Date.now();
 
-        // ✅ 파일 로드 성공 시
         script.onload = () => {
             if (typeof questionBank === 'undefined') {
                 content.innerHTML = `<div class="error-msg"><b>[데이터 정의 오류]</b><br>${safePath} 파일 내부에 questionBank 변수가 정의되지 않았습니다.</div>`;
@@ -174,12 +173,11 @@
             renderQuestions();
         };
 
-        // ✅ 파일 로드 실패 시 (경로 오타 등)
         script.onerror = () => {
             content.innerHTML = `
                 <div class="error-msg">
                     <b>⚠️ 파일을 찾을 수 없습니다.</b><br>
-                    <span style="font-size:14px; color:#666;">경로: ${safePath}<br>db.json의 파일명 설정이 실제 파일과 일치하는지 확인하세요.</span><br>
+                    <span style="font-size:14px; color:#666;">경로: ${safePath}<br>해당 JS 파일이 깃허브에 실제로 있는지 확인하세요.</span><br>
                     <button class="btn btn-primary" onclick="window.history.back()" style="margin-top:20px;">목록으로 돌아가기</button>
                 </div>`;
         };
@@ -207,6 +205,7 @@
 
     function renderTabs() {
         const container = document.getElementById('categoryTabs');
+        if (!dbData || !dbData.exams) return;
         container.innerHTML = Object.keys(dbData.exams).map((cat, i) => {
             if(i === 0 && !currentCategory) currentCategory = cat;
             return `<button class="tab-btn ${cat === currentCategory ? 'active' : ''}" onclick="changeTab(this, '${cat}')">${cat}</button>`;
