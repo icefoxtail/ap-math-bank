@@ -2,177 +2,111 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>AP수학학원 기출 저장소 v7.1.1</title>
+    <title>AP수학 기출 아카이브 v7.2.1</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap');
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: 'Pretendard', sans-serif; background: #f8fafc; color: #1e293b; padding: 40px 20px; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700;900&display=swap');
+        body { margin: 0; padding: 40px; font-family: 'Pretendard', sans-serif; background: #f8fafc; color: #1e293b; }
+        .container { max-width: 1100px; margin: 0 auto; }
         header { text-align: center; margin-bottom: 40px; }
-        h1 { font-weight: 800; font-size: 28pt; color: #0f172a; margin-bottom: 20px; }
-        .search-bar { width: 100%; max-width: 500px; padding: 12px 20px; border-radius: 12px; border: 2px solid #e2e8f0; font-size: 11pt; transition: 0.2s; outline: none; }
+        h1 { font-weight: 900; font-size: 2.5rem; color: #0f172a; margin-bottom: 20px; }
+        .search-bar { width: 100%; max-width: 500px; padding: 14px 20px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 11pt; outline: none; transition: 0.2s; }
         .search-bar:focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
         
-        /* [Filter Area] 중등부/고등부 분리 및 고유 색상 적용 */
+        /* [필터 디자인] 중등 Blue / 고등 Red 포인트 */
         .filters { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 30px; }
         .filter-group { display: flex; gap: 8px; align-items: center; padding: 0 15px; border-right: 1px solid #e2e8f0; }
-        .filter-group:last-child { border-right: none; }
-        .filter-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-weight: 600; font-size: 9.5pt; color: #64748b; transition: 0.2s; }
-        
-        /* 중등부 활성화 (Blue) */
-        .filter-btn.active[data-group="grade"]:not(.hs-btn), 
-        .filter-btn.active[data-group="all"] { background: #3b82f6; color: white; border-color: #3b82f6; }
-        
-        /* 고등부 활성화 (Red) */
+        .filter-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-weight: 700; color: #64748b; transition: 0.2s; }
+        .filter-btn.active[data-group="all"] { background: #1e293b; color: white; border-color: #1e293b; }
+        .filter-btn.active[data-group="grade"]:not(.hs-btn) { background: #3b82f6; color: white; border-color: #3b82f6; }
         .filter-btn.hs-btn.active { background: #ef4444 !important; color: white !important; border-color: #ef4444 !important; }
-        
-        .filter-btn:hover:not(.active) { background: #f1f5f9; }
 
-        /* [Exam Grid] 카드 레이아웃 */
-        .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .exam-card { background: white; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.3s; }
-        .exam-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border-color: #3b82f6; }
-        .exam-card h3 { margin: 0 0 12px 0; font-size: 14pt; font-weight: 800; color: #1e293b; line-height: 1.4; }
-        
-        /* [Badge] 학년별 배지 스타일 */
-        .meta { display: flex; gap: 8px; margin-bottom: 12px; }
-        .badge { padding: 4px 10px; border-radius: 6px; font-size: 8.5pt; font-weight: 700; }
-        .badge-grade { background: #eff6ff; color: #3b82f6; }
-        .badge-high { background: #fef2f2; color: #dc2626; } /* 고등부 전용 빨간 배지 */
-        .badge-type { background: #f0fdf4; color: #10b981; }
-        .badge-diff { background: #fff7ed; color: #f59e0b; }
-        
-        .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tag { font-size: 8.5pt; color: #94a3b8; }
-        .tag::before { content: '#'; }
-        #status { text-align: center; padding: 40px; color: #64748b; font-weight: 600; }
-        
-        @media (max-width: 600px) { .filter-group { border-right: none; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; width: 100%; justify-content: center; } }
+        .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+        .exam-card { background: white; border-radius: 18px; padding: 26px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.3s; position: relative; }
+        .exam-card:hover { transform: translateY(-5px); border-color: #3b82f6; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .badge { padding: 5px 12px; border-radius: 8px; font-size: 8.5pt; font-weight: 800; margin-right: 8px; }
+        .badge-ms { background: #eff6ff; color: #3b82f6; }
+        .badge-hs { background: #fef2f2; color: #dc2626; }
+        .exam-title { font-size: 14pt; font-weight: 800; color: #1e293b; margin-top: 15px; line-height: 1.4; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>AP수학학원 기출 저장소 📂</h1>
-            <input type="text" id="search-input" class="search-bar" placeholder="학교명, 단원코드, 태그 검색...">
+            <h1>AP수학 기출 저장소 📂</h1>
+            <input type="text" id="search-input" class="search-bar" placeholder="학교명, 단원, 키워드 검색...">
         </header>
 
         <div class="filters" id="filter-bar">
             <button class="filter-btn active" data-group="all" data-value="all">전체보기</button>
-            
             <div class="filter-group">
-                <button class="filter-btn" data-group="grade" data-value="1">중1</button>
-                <button class="filter-btn" data-group="grade" data-value="2">중2</button>
-                <button class="filter-btn" data-group="grade" data-value="3">중3</button>
+                <button class="filter-btn" data-group="grade" data-value="중1">중1</button>
+                <button class="filter-btn" data-group="grade" data-value="중2">중2</button>
+                <button class="filter-btn" data-group="grade" data-value="중3">중3</button>
             </div>
-
-            <div class="filter-group">
+            <div class="filter-group" style="border:none;">
                 <button class="filter-btn hs-btn" data-group="grade" data-value="고1">고1 🎓</button>
                 <button class="filter-btn hs-btn" data-group="grade" data-value="고2">고2 🎓</button>
                 <button class="filter-btn hs-btn" data-group="grade" data-value="고3">고3 🎓</button>
             </div>
-
-            <div class="filter-group">
-                <button class="filter-btn" data-group="type" data-value="mid">중간</button>
-                <button class="filter-btn" data-group="type" data-value="final">기말</button>
-            </div>
         </div>
 
         <div id="exam-list" class="exam-grid"></div>
-        <div id="status">데이터를 로드하는 중...</div>
+        <div id="status" style="text-align:center; padding:50px; color:#94a3b8; font-weight:700;">데이터를 불러오는 중...</div>
     </div>
 
 <script>
 let examData = [];
-const filterState = { search: '', grade: 'all', type: 'all' };
-const diffMap = { easy: '입문', normal: '보통', hard: '고난도' };
-
-function escapeHtml(str) {
-    if (!str) return "";
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
+let filterState = { search: '', grade: 'all' };
 
 async function loadExams() {
     try {
         const response = await fetch('db.json?v=' + Date.now());
-        if (!response.ok) throw new Error('db.json 파일을 찾을 수 없습니다.');
         const data = await response.json();
         examData = data.exams || [];
         renderExams();
-    } catch (err) {
-        document.getElementById('status').innerHTML = `<span style="color:#ef4444;">${err.message}</span>`;
-    }
+    } catch (e) { document.getElementById('status').innerText = "DB 로드 실패!"; }
 }
 
 function renderExams() {
     const list = document.getElementById('exam-list');
-    const status = document.getElementById('status');
-    
     const filtered = examData.filter(ex => {
-        const searchTarget = `${ex.title} ${(ex.tags||[]).join(' ')} ${(ex.units||[]).join(' ')}`.toLowerCase();
-        const matchSearch = searchTarget.includes(filterState.search.toLowerCase());
-        const matchGrade = filterState.grade === 'all' || String(ex.grade) === String(filterState.grade);
-        const matchType = filterState.type === 'all' || ex.examType === filterState.type;
-        return matchSearch && matchGrade && matchType;
+        const matchSearch = ex.title.toLowerCase().includes(filterState.search.toLowerCase()) || ex.school.includes(filterState.search);
+        // [수정 핵심] 완전 일치 비교 (ex.grade === "중2")
+        const matchGrade = filterState.grade === 'all' || ex.grade === filterState.grade;
+        return matchSearch && matchGrade;
     });
 
     list.innerHTML = '';
-    if (filtered.length === 0) {
-        status.innerText = "조건에 맞는 시험지가 없습니다.";
-        status.style.display = 'block';
-        return;
-    }
+    document.getElementById('status').style.display = filtered.length ? 'none' : 'block';
+    if(!filtered.length) { document.getElementById('status').innerText = "조건에 맞는 시험지가 없습니다."; return; }
 
-    status.style.display = 'none';
     filtered.forEach(ex => {
-        const isHigh = String(ex.grade).includes('고');
+        const isHs = ex.grade.includes('고');
         const card = document.createElement('div');
         card.className = 'exam-card';
-        card.onclick = () => {
-            location.href = `engine.html?data=${encodeURIComponent(ex.file)}&title=${encodeURIComponent(ex.title)}`;
-        };
-
+        card.onclick = () => location.href = `engine.html?data=${encodeURIComponent(ex.file)}&title=${encodeURIComponent(ex.title)}`;
         card.innerHTML = `
             <div class="meta">
-                <span class="badge ${isHigh ? 'badge-high' : 'badge-grade'}">${isHigh ? '' : '중'}${ex.grade}</span>
-                <span class="badge badge-type">${ex.examType === 'mid' ? '중간' : '기말'}</span>
-                <span class="badge badge-diff">${diffMap[ex.difficulty] || ex.difficulty}</span>
+                <span class="badge ${isHs ? 'badge-hs' : 'badge-ms'}">${ex.grade}</span>
+                <span class="badge" style="background:#f1f5f9; color:#64748b;">${ex.examType === 'mid' ? '중간' : '기말'}</span>
             </div>
-            <h3>${escapeHtml(ex.title)}</h3>
-            <div class="tags">
-                ${(ex.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
-            </div>
+            <div class="exam-title">${ex.title}</div>
         `;
         list.appendChild(card);
     });
 }
 
-document.getElementById('search-input').addEventListener('input', (e) => {
-    filterState.search = e.target.value;
-    renderExams();
-});
-
 document.getElementById('filter-bar').addEventListener('click', (e) => {
     const btn = e.target.closest('.filter-btn');
     if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterState.grade = btn.dataset.value;
+    renderExams();
+});
 
-    const group = btn.dataset.group;
-    const value = btn.dataset.value;
-
-    if (group === 'all') {
-        filterState.grade = 'all';
-        filterState.type = 'all';
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    } else {
-        document.querySelector('.filter-btn[data-group="all"]').classList.remove('active');
-        document.querySelectorAll(`.filter-btn[data-group="${group}"]`).forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        filterState[group] = value;
-    }
+document.getElementById('search-input').addEventListener('input', (e) => {
+    filterState.search = e.target.value;
     renderExams();
 });
 
