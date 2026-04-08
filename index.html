@@ -2,115 +2,108 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>AP수학 기출 아카이브 v7.2.1</title>
+    <title>제신기출프로젝트 - 시험지 통합 관리</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700;900&display=swap');
-        body { margin: 0; padding: 40px; font-family: 'Pretendard', sans-serif; background: #f8fafc; color: #1e293b; }
-        .container { max-width: 1100px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 40px; }
-        h1 { font-weight: 900; font-size: 2.5rem; color: #0f172a; margin-bottom: 20px; }
-        .search-bar { width: 100%; max-width: 500px; padding: 14px 20px; border-radius: 14px; border: 2px solid #e2e8f0; font-size: 11pt; outline: none; transition: 0.2s; }
-        .search-bar:focus { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
-        
-        /* [필터 디자인] 중등 Blue / 고등 Red 포인트 */
-        .filters { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 30px; }
-        .filter-group { display: flex; gap: 8px; align-items: center; padding: 0 15px; border-right: 1px solid #e2e8f0; }
-        .filter-btn { padding: 10px 20px; border-radius: 30px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-weight: 700; color: #64748b; transition: 0.2s; }
-        .filter-btn.active[data-group="all"] { background: #1e293b; color: white; border-color: #1e293b; }
-        .filter-btn.active[data-group="grade"]:not(.hs-btn) { background: #3b82f6; color: white; border-color: #3b82f6; }
-        .filter-btn.hs-btn.active { background: #ef4444 !important; color: white !important; border-color: #ef4444 !important; }
-
-        .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-        .exam-card { background: white; border-radius: 18px; padding: 26px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.3s; position: relative; }
-        .exam-card:hover { transform: translateY(-5px); border-color: #3b82f6; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        .badge { padding: 5px 12px; border-radius: 8px; font-size: 8.5pt; font-weight: 800; margin-right: 8px; }
-        .badge-ms { background: #eff6ff; color: #3b82f6; }
-        .badge-hs { background: #fef2f2; color: #dc2626; }
-        .exam-title { font-size: 14pt; font-weight: 800; color: #1e293b; margin-top: 15px; line-height: 1.4; }
+        /* 강사님의 효율적인 작업을 위한 직관적인 UI 스타일 */
+        body { font-family: 'Pretendard', sans-serif; padding: 20px; background: #f5f5f5; }
+        .filter-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        select, input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .exam-card { background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #007bff; transition: 0.2s; cursor: pointer; }
+        .exam-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .exam-card.archive { border-left-color: #28a745; } /* 기출정리(archive)는 녹색 구분 */
+        .title { font-weight: bold; font-size: 1.1em; color: #333; margin-bottom: 5px; }
+        .meta { font-size: 0.9em; color: #666; }
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; background: #eee; margin-right: 5px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>AP수학 기출 저장소 📂</h1>
-            <input type="text" id="search-input" class="search-bar" placeholder="학교명, 단원, 키워드 검색...">
-        </header>
 
-        <div class="filters" id="filter-bar">
-            <button class="filter-btn active" data-group="all" data-value="all">전체보기</button>
-            <div class="filter-group">
-                <button class="filter-btn" data-group="grade" data-value="중1">중1</button>
-                <button class="filter-btn" data-group="grade" data-value="중2">중2</button>
-                <button class="filter-btn" data-group="grade" data-value="중3">중3</button>
-            </div>
-            <div class="filter-group" style="border:none;">
-                <button class="filter-btn hs-btn" data-group="grade" data-value="고1">고1 🎓</button>
-                <button class="filter-btn hs-btn" data-group="grade" data-value="고2">고2 🎓</button>
-                <button class="filter-btn hs-btn" data-group="grade" data-value="고3">고3 🎓</button>
-            </div>
-        </div>
-
-        <div id="exam-list" class="exam-grid"></div>
-        <div id="status" style="text-align:center; padding:50px; color:#94a3b8; font-weight:700;">데이터를 불러오는 중...</div>
+    <div class="filter-container">
+        <input type="text" id="searchInput" placeholder="학교명 또는 과목 검색...">
+        <select id="yearFilter"><option value="all">모든 연도</option></select>
+        <select id="gradeFilter"><option value="all">모든 학년</option></select>
+        <select id="subjectFilter"><option value="all">모든 과목</option></select>
+        <select id="typeFilter">
+            <option value="all">모든 유형</option>
+            <option value="exam">학교 기출</option>
+            <option value="archive">기출 정리</option>
+        </select>
     </div>
 
-<script>
-let examData = [];
-let filterState = { search: '', grade: 'all' };
+    <div id="examList" class="exam-grid"></div>
 
-async function loadExams() {
-    try {
-        const response = await fetch('db.json?v=' + Date.now());
-        const data = await response.json();
-        examData = data.exams || [];
-        renderExams();
-    } catch (e) { document.getElementById('status').innerText = "DB 로드 실패!"; }
-}
+    <script>
+        let db = {};
 
-function renderExams() {
-    const list = document.getElementById('exam-list');
-    const filtered = examData.filter(ex => {
-        const matchSearch = ex.title.toLowerCase().includes(filterState.search.toLowerCase()) || ex.school.includes(filterState.search);
-        // [수정 핵심] 완전 일치 비교 (ex.grade === "중2")
-        const matchGrade = filterState.grade === 'all' || ex.grade === filterState.grade;
-        return matchSearch && matchGrade;
-    });
+        // 1. 데이터 로드 및 필터 초기화
+        async function init() {
+            const response = await fetch('db.json');
+            db = await response.json();
+            
+            setupFilters();
+            renderExams(db.exams);
+        }
 
-    list.innerHTML = '';
-    document.getElementById('status').style.display = filtered.length ? 'none' : 'block';
-    if(!filtered.length) { document.getElementById('status').innerText = "조건에 맞는 시험지가 없습니다."; return; }
+        function setupFilters() {
+            const years = [...new Set(db.exams.map(e => e.year))].sort((a, b) => b - a);
+            const grades = [...new Set(db.exams.map(e => e.grade))].sort();
+            const subjects = [...new Set(db.exams.map(e => e.subject))].sort();
 
-    filtered.forEach(ex => {
-        const isHs = ex.grade.includes('고');
-        const card = document.createElement('div');
-        card.className = 'exam-card';
-        card.onclick = () => location.href = `engine.html?data=${encodeURIComponent(ex.file)}&title=${encodeURIComponent(ex.title)}`;
-        card.innerHTML = `
-            <div class="meta">
-                <span class="badge ${isHs ? 'badge-hs' : 'badge-ms'}">${ex.grade}</span>
-                <span class="badge" style="background:#f1f5f9; color:#64748b;">${ex.examType === 'mid' ? '중간' : '기말'}</span>
-            </div>
-            <div class="exam-title">${ex.title}</div>
-        `;
-        list.appendChild(card);
-    });
-}
+            populateSelect('yearFilter', years);
+            populateSelect('gradeFilter', grades);
+            populateSelect('subjectFilter', subjects);
 
-document.getElementById('filter-bar').addEventListener('click', (e) => {
-    const btn = e.target.closest('.filter-btn');
-    if (!btn) return;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    filterState.grade = btn.dataset.value;
-    renderExams();
-});
+            [searchInput, yearFilter, gradeFilter, subjectFilter, typeFilter].forEach(el => {
+                el.addEventListener('change', filterData);
+                el.addEventListener('keyup', filterData);
+            });
+        }
 
-document.getElementById('search-input').addEventListener('input', (e) => {
-    filterState.search = e.target.value;
-    renderExams();
-});
+        function populateSelect(id, items) {
+            const select = document.getElementById(id);
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                select.appendChild(opt);
+            });
+        }
 
-loadExams();
-</script>
+        // 2. 검색 및 필터링 로직 (확장성 확보)
+        function filterData() {
+            const s = document.getElementById('searchInput').value.toLowerCase();
+            const y = document.getElementById('yearFilter').value;
+            const g = document.getElementById('gradeFilter').value;
+            const sub = document.getElementById('subjectFilter').value;
+            const t = document.getElementById('typeFilter').value;
+
+            const filtered = db.exams.filter(ex => {
+                return (ex.school.toLowerCase().includes(s) || ex.subject.toLowerCase().includes(s)) &&
+                       (y === 'all' || ex.year.toString() === y) &&
+                       (g === 'all' || ex.grade === g) &&
+                       (sub === 'all' || ex.subject === sub) &&
+                       (t === 'all' || ex.type === t);
+            });
+
+            renderExams(filtered);
+        }
+
+        // 3. 타이틀 자동 생성 규칙 준수 (연도_학교학년_학기_시험_과목)
+        function renderExams(data) {
+            const container = document.getElementById('examList');
+            container.innerHTML = data.map(ex => `
+                <div class="exam-card ${ex.type}" onclick="location.href='exams/${ex.file}'">
+                    <div class="title">${ex.year}_${ex.school}${ex.grade}_${ex.semester}학기_${ex.examType === 'mid' ? '중간' : (ex.examType === 'final' ? '기말' : '기출정리')}_${ex.subject}</div>
+                    <div class="meta">
+                        <span class="badge">${ex.type === 'exam' ? '기출' : '정리'}</span>
+                        <span>${ex.file}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        init();
+    </script>
 </body>
-</html>
+</html>ㄴ
