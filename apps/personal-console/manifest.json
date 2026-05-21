@@ -1,0 +1,26 @@
+{
+  "name": "My Life OS",
+  "short_name": "Life OS",
+  "description": "오늘의 나를 기록하고 앞으로의 나를 정리하는 개인 콘솔",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f4ef",
+  "theme_color": "#f6f4ef",
+  "lang": "ko",
+  "categories": [
+    "productivity",
+    "lifestyle",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "../../icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "prefer_related_applications": false
+}
