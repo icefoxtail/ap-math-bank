@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f4ef">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Life OS">
+  <title>My Life OS</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="../../icon.png">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f4ef;
+      --surface: rgba(255, 255, 255, 0.72);
+      --surface-strong: rgba(255, 255, 255, 0.94);
+      --ink: #24211d;
+      --muted: #77716a;
+      --hairline: rgba(40, 36, 31, 0.1);
+      --shadow: 0 18px 50px rgba(57, 50, 43, 0.1);
+      --blue: #6f8fbf;
+      --teal: #75a99e;
+      --sage: #9dab84;
+      --sand: #d7bd7c;
+      --rose: #c98f8a;
+      --gray: #cbc7bf;
+      --deep: #5f7fae;
+      --radius-lg: 26px;
+      --radius: 18px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 12% -10%, rgba(111, 143, 191, 0.18), transparent 32%),
+        linear-gradient(180deg, #fbfaf6 0%, var(--bg) 44%, #efede7 100%);
+      color: var(--ink);
+      letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app-shell {
+      width: min(100%, 980px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px 14px calc(94px + var(--safe-bottom));
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 2px 14px;
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 8vw, 46px);
+      font-weight: 750;
+      line-height: 1.03;
+    }
+
+    .icon-btn {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: var(--surface-strong);
+      color: var(--ink);
+      box-shadow: 0 10px 24px rgba(57, 50, 43, 0.08);
+    }
+
+    .hero {
+      overflow: hidden;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(24px);
+    }
+
+    .hero-main {
+      padding: 22px 20px 18px;
+    }
+
+    .self-note {
+      margin: 14px 0 0;
+      color: #4f4942;
+      font-size: 17px;
+      line-height: 1.58;
+    }
+
+    .today-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 11px;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.62);
+      color: #575049;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .timeline-card {
+      margin-top: 12px;
+      padding: 16px;
+      border-top: 1px solid var(--hairline);
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-title h2,
+    .section-title h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 760;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .timeline {
+      position: relative;
+      height: 42px;
+      overflow: hidden;
+      border: 1px solid rgba(42, 37, 31, 0.08);
+      border-radius: 999px;
+      background: rgba(232, 229, 220, 0.9);
+    }
+
+    .time-block {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      min-width: 3px;
+      border-right: 1px solid rgba(255, 255, 255, 0.52);
+    }
+
+    .time-block.deep { background: var(--blue); }
+    .time-block.learn { background: var(--teal); }
+    .time-block.create { background: #aaa0be; }
+    .time-block.life { background: var(--sand); }
+    .time-block.rest { background: #a8c7d3; }
+    .time-block.drift { background: var(--rose); }
+    .time-block.sleep { background: #bfc2c4; }
+    .time-block.review { background: var(--sage); }
+
+    .time-ruler {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .timeline-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      color: #4f4942;
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--gray);
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .card {
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 10px 30px rgba(57, 50, 43, 0.06);
+      backdrop-filter: blur(18px);
+      padding: 16px;
+    }
+
+    .quick-add {
+      display: grid;
+      grid-template-columns: 1fr 46px;
+      gap: 8px;
+    }
+
+    .field,
+    .textarea {
+      width: 100%;
+      border: 1px solid var(--hairline);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.84);
+      color: var(--ink);
+      outline: 0;
+    }
+
+    .field {
+      min-height: 46px;
+      padding: 0 13px;
+    }
+
+    .textarea {
+      min-height: 118px;
+      resize: vertical;
+      padding: 13px;
+      line-height: 1.6;
+    }
+
+    .primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border-radius: 14px;
+      background: #2f5f86;
+      color: white;
+      font-weight: 800;
+    }
+
+    .ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--hairline);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.64);
+      color: #4c4740;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      min-height: 42px;
+      padding: 10px 0;
+      border-top: 1px solid rgba(42, 37, 31, 0.07);
+    }
+
+    .item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .check {
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      margin-top: 1px;
+      border: 1px solid rgba(42, 37, 31, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    .check.done {
+      border-color: transparent;
+      background: var(--sage);
+    }
+
+    .item-text {
+      flex: 1;
+      min-width: 0;
+      color: #3e3933;
+      font-size: 14px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .item-text.done {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .item-sub {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .empty {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      min-height: 82px;
+      padding: 13px;
+      border: 1px solid rgba(42, 37, 31, 0.08);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .stat strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tab-panel {
+      display: none;
+      animation: rise 0.18s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      right: 12px;
+      bottom: calc(12px + var(--safe-bottom));
+      left: 12px;
+      z-index: 30;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 7px;
+      border: 1px solid var(--hairline);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 20px 50px rgba(57, 50, 43, 0.14);
+      backdrop-filter: blur(24px);
+    }
+
+    .nav-btn {
+      min-height: 44px;
+      border-radius: 16px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .nav-btn.active {
+      background: rgba(47, 95, 134, 0.11);
+      color: #274e71;
+    }
+
+    .row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .danger {
+      color: #8b4f4b;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (min-width: 760px) {
+      .app-shell {
+        padding-top: 26px;
+      }
+
+      .grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-main {
+        padding: 30px;
+      }
+
+      .timeline-card {
+        padding: 20px 30px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <p class="eyebrow" id="dateLabel">오늘</p>
+        <h1>My Life OS</h1>
+      </div>
+      <button class="icon-btn" id="installBtn" type="button" title="홈 화면에 추가">+</button>
+    </header>
+
+    <main>
+      <section class="tab-panel active" id="panel-today">
+        <article class="hero">
+          <div class="hero-main">
+            <p class="eyebrow">오늘의 나</p>
+            <p class="self-note" id="dailyPhrase">오늘의 나는 방향을 다시 내 쪽으로 가져왔다. 지금은 작게 시작해도 충분하다.</p>
+            <div class="today-meta" id="todayMeta"></div>
+          </div>
+          <div class="timeline-card">
+            <div class="section-title">
+              <h2>24시간 흐름</h2>
+              <span>00 - 24</span>
+            </div>
+            <div class="timeline" id="timeline" aria-label="24시간 활동 타임라인"></div>
+            <div class="time-ruler">
+              <span>00</span><span>06</span><span>12</span><span>18</span><span>24</span>
+            </div>
+            <div class="timeline-list" id="timelineList"></div>
+          </div>
+        </article>
+
+        <div class="grid">
+          <section class="card">
+            <div class="section-title">
+              <h3>빠른 입력</h3>
+              <span>일단 던지기</span>
+            </div>
+            <form class="quick-add" id="quickForm">
+              <input class="field" id="quickInput" autocomplete="off" placeholder="생각, 할 일, 일정...">
+              <button class="primary-btn" type="submit">+</button>
+            </form>
+          </section>
+
+          <section class="card">
+            <div class="section-title">
+              <h3>지금 남은 것</h3>
+              <button class="ghost-btn" type="button" data-open-add="task">추가</button>
+            </div>
+            <div class="list" id="taskList"></div>
+          </section>
+
+          <section class="card">
+            <div class="section-title">
+              <h3>다음 7일</h3>
+              <button class="ghost-btn" type="button" data-open-add="upcoming">추가</button>
+            </div>
+            <div class="list" id="upcomingList"></div>
+          </section>
+
+          <section class="card">
+            <div class="section-title">
+              <h3>오늘 한 일</h3>
+              <button class="ghost-btn" type="button" data-open-add="done">추가</button>
+            </div>
+            <div class="list" id="doneList"></div>
+          </section>
+
+          <section class="card">
+            <div class="section-title">
+              <h3>미분류 활동</h3>
+              <span>나중에 자동 연결</span>
+            </div>
+            <div class="list" id="unclassifiedList"></div>
+          </section>
+
+          <section class="card">
+            <div class="section-title">
+              <h3>오늘의 기록</h3>
+              <span id="reviewSaved">저장됨</span>
+            </div>
+            <textarea class="textarea" id="reviewInput"></textarea>
+          </section>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-future">
+        <div class="grid">
+          <section class="card">
+            <div class="section-title">
+              <h3>Inbox</h3>
+              <span>아직 정하지 않은 것</span>
+            </div>
+            <div class="list" id="inboxList"></div>
+          </section>
+          <section class="card">
+            <div class="section-title">
+              <h3>앞으로</h3>
+              <span>일정과 맡겨둔 일</span>
+            </div>
+            <div class="list" id="futureList"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-log">
+        <div class="grid">
+          <section class="card">
+            <div class="section-title">
+              <h3>오늘의 비율</h3>
+              <span>데모 데이터</span>
+            </div>
+            <div class="stats" id="statsGrid"></div>
+          </section>
+          <section class="card">
+            <div class="section-title">
+              <h3>기록 방향</h3>
+              <span>다음 단계</span>
+            </div>
+            <p class="empty">Windows 기록 수집기가 붙으면 앱, 창 제목, 브라우저 도메인이 이곳으로 들어온다. 폰에서는 하루를 보고, 틀린 분류만 조용히 고친다.</p>
+          </section>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-me">
+        <div class="grid">
+          <section class="card">
+            <div class="section-title">
+              <h3>내 기준</h3>
+              <span>초기 규칙</span>
+            </div>
+            <div class="list" id="rulesList"></div>
+          </section>
+          <section class="card">
+            <div class="section-title">
+              <h3>저장과 백업</h3>
+              <span>localStorage + JSON</span>
+            </div>
+            <p class="empty">이 폰/브라우저 안에는 계속 저장된다. 오래 쓰기 전에는 JSON으로 내보내 두고, 나중에 클라우드 동기화를 붙이면 된다.</p>
+            <div class="row-actions">
+              <button class="ghost-btn" type="button" id="exportBtn">JSON 내보내기</button>
+              <label class="ghost-btn" for="importFile">JSON 가져오기</label>
+              <input id="importFile" type="file" accept="application/json" hidden>
+              <button class="ghost-btn danger" type="button" id="resetBtn">초기화</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="하단 메뉴">
+    <button class="nav-btn active" type="button" data-tab="today">오늘</button>
+    <button class="nav-btn" type="button" data-tab="future">앞으로</button>
+    <button class="nav-btn" type="button" data-tab="log">기록</button>
+    <button class="nav-btn" type="button" data-tab="me">나</button>
+  </nav>
+
+  <script>
+    const LIFE_OS_STORAGE_KEY = 'my-life-os:pwa-state:v1';
+
+    const defaultLifeState = {
+      inbox: [],
+      tasks: [
+        { id: 'task-1', title: '개인앱 설계도 정리', done: false },
+        { id: 'task-2', title: '24시간 타임라인 구조 잡기', done: false }
+      ],
+      upcoming: [
+        { id: 'event-1', date: '다음 주', title: '첫 PWA 버전 폰에서 확인' },
+        { id: 'event-2', date: '언젠가', title: 'Windows 기록 수집기 연결' }
+      ],
+      doneToday: [
+        { id: 'done-1', title: '나를 위한 앱 방향 정리' },
+        { id: 'done-2', title: 'UI 톤 결정' }
+      ],
+      review: '오늘의 나는 방향을 다시 내 쪽으로 가져왔다. 지금은 작게 시작해도 충분하다.'
+    };
+
+    const demoTimeline = [
+      { start: 0, end: 7.5, label: '수면', category: 'sleep' },
+      { start: 8.5, end: 10.25, label: 'Codex', category: 'deep' },
+      { start: 10.25, end: 11, label: '설계 대화', category: 'create' },
+      { start: 13.5, end: 15, label: '자료조사', category: 'learn' },
+      { start: 18.25, end: 19, label: '생활', category: 'life' },
+      { start: 20, end: 20.75, label: 'YouTube', category: 'drift' },
+      { start: 22.5, end: 23, label: '하루 정리', category: 'review' }
+    ];
+
+    const unclassified = [
+      { id: 'u1', title: 'Chrome 28분', sub: '도메인 기록기가 붙으면 자동 분류' },
+      { id: 'u2', title: 'YouTube 16분', sub: '학습인지 휴식인지 나중에 확인' }
+    ];
+
+    const rules = [
+      { title: 'Codex / ChatGPT', sub: '생산 또는 창작으로 시작' },
+      { title: 'YouTube', sub: '기본은 미분류, 내가 고치면 규칙으로 기억' },
+      { title: 'Instagram / Shorts', sub: '산만함 후보로 조용히 표시' }
+    ];
+
+    let state = loadLifeState();
+    let installPrompt = null;
+
+    function cloneDefaultState() {
+      return JSON.parse(JSON.stringify(defaultLifeState));
+    }
+
+    function loadLifeState() {
+      try {
+        const raw = localStorage.getItem(LIFE_OS_STORAGE_KEY);
+        if (!raw) return cloneDefaultState();
+        return { ...cloneDefaultState(), ...JSON.parse(raw) };
+      } catch (error) {
+        return cloneDefaultState();
+      }
+    }
+
+    function saveLifeState(nextState) {
+      localStorage.setItem(LIFE_OS_STORAGE_KEY, JSON.stringify(nextState));
+    }
+
+    function uid(prefix) {
+      return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function formatHour(hour) {
+      const h = Math.floor(hour);
+      const m = Math.round((hour - h) * 60);
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    }
+
+    function renderDate() {
+      const today = new Date();
+      const label = new Intl.DateTimeFormat('ko-KR', {
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long'
+      }).format(today);
+      document.getElementById('dateLabel').textContent = label;
+    }
+
+    function renderMeta() {
+      const undone = state.tasks.filter((task) => !task.done).length;
+      const done = state.doneToday.length;
+      const inbox = state.inbox.length;
+      document.getElementById('todayMeta').innerHTML = [
+        `<span class="pill">남은 일 ${undone}</span>`,
+        `<span class="pill">오늘 한 일 ${done}</span>`,
+        `<span class="pill">Inbox ${inbox}</span>`
+      ].join('');
+    }
+
+    function renderTimeline() {
+      const timeline = document.getElementById('timeline');
+      timeline.innerHTML = demoTimeline.map((block) => {
+        const left = (block.start / 24) * 100;
+        const width = ((block.end - block.start) / 24) * 100;
+        const label = `${formatHour(block.start)}-${formatHour(block.end)} ${block.label}`;
+        return `<span class="time-block ${block.category}" style="left:${left}%;width:${width}%;" title="${label}"></span>`;
+      }).join('');
+
+      document.getElementById('timelineList').innerHTML = demoTimeline
+        .filter((block) => block.category !== 'sleep')
+        .map((block) => `
+          <div class="timeline-item">
+            <span>${formatHour(block.start)}</span>
+            <span>${block.label}</span>
+            <span class="dot ${block.category}"></span>
+          </div>
+        `).join('');
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = state.tasks.length ? state.tasks.map((task) => `
+        <div class="item">
+          <button class="check ${task.done ? 'done' : ''}" type="button" data-toggle-task="${task.id}" aria-label="완료 전환"></button>
+          <span class="item-text ${task.done ? 'done' : ''}">${escapeHtml(task.title)}</span>
+        </div>
+      `).join('') : '<p class="empty">지금은 남은 일이 없다. 오늘은 가볍다.</p>';
+    }
+
+    function renderUpcoming() {
+      const html = state.upcoming.length ? state.upcoming.map((event) => `
+        <div class="item">
+          <span class="check done"></span>
+          <span class="item-text">${escapeHtml(event.title)}<span class="item-sub">${escapeHtml(event.date)}</span></span>
+        </div>
+      `).join('') : '<p class="empty">맡겨둔 일정이 없다.</p>';
+      document.getElementById('upcomingList').innerHTML = html;
+      document.getElementById('futureList').innerHTML = html;
+    }
+
+    function renderDone() {
+      document.getElementById('doneList').innerHTML = state.doneToday.length ? state.doneToday.map((item) => `
+        <div class="item">
+          <span class="check done"></span>
+          <span class="item-text">${escapeHtml(item.title)}</span>
+        </div>
+      `).join('') : '<p class="empty">아직 오늘 한 일을 적지 않았다.</p>';
+    }
+
+    function renderInbox() {
+      document.getElementById('inboxList').innerHTML = state.inbox.length ? state.inbox.map((item) => `
+        <div class="item">
+          <button class="check" type="button" data-promote-inbox="${item.id}" aria-label="오늘 할 일로 이동"></button>
+          <span class="item-text">${escapeHtml(item.title)}<span class="item-sub">누르면 오늘 할 일로 이동</span></span>
+        </div>
+      `).join('') : '<p class="empty">떠오르는 것은 빠른 입력에 던져두면 된다.</p>';
+    }
+
+    function renderStaticLists() {
+      document.getElementById('unclassifiedList').innerHTML = unclassified.map((item) => `
+        <div class="item">
+          <span class="check"></span>
+          <span class="item-text">${item.title}<span class="item-sub">${item.sub}</span></span>
+        </div>
+      `).join('');
+
+      document.getElementById('rulesList').innerHTML = rules.map((item) => `
+        <div class="item">
+          <span class="check done"></span>
+          <span class="item-text">${item.title}<span class="item-sub">${item.sub}</span></span>
+        </div>
+      `).join('');
+    }
+
+    function renderStats() {
+      const buckets = demoTimeline.reduce((acc, block) => {
+        acc[block.category] = (acc[block.category] || 0) + (block.end - block.start);
+        return acc;
+      }, {});
+      const labels = {
+        deep: '생산',
+        learn: '학습',
+        create: '창작',
+        life: '생활',
+        drift: '산만함',
+        review: '정리'
+      };
+      document.getElementById('statsGrid').innerHTML = Object.entries(labels).map(([key, label]) => `
+        <div class="stat">
+          <strong>${((buckets[key] || 0) * 60).toFixed(0)}m</strong>
+          <span>${label}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderReview() {
+      const reviewInput = document.getElementById('reviewInput');
+      if (reviewInput.value !== state.review) reviewInput.value = state.review;
+      document.getElementById('dailyPhrase').textContent = state.review;
+    }
+
+    function renderAll() {
+      renderDate();
+      renderMeta();
+      renderTimeline();
+      renderTasks();
+      renderUpcoming();
+      renderDone();
+      renderInbox();
+      renderStaticLists();
+      renderStats();
+      renderReview();
+    }
+
+    function addInbox(title) {
+      const cleaned = title.trim();
+      if (!cleaned) return;
+      state.inbox.unshift({ id: uid('inbox'), title: cleaned });
+      saveLifeState(state);
+      renderAll();
+    }
+
+    function addTask(title) {
+      const cleaned = title.trim();
+      if (!cleaned) return;
+      state.tasks.unshift({ id: uid('task'), title: cleaned, done: false });
+      saveLifeState(state);
+      renderAll();
+    }
+
+    function addUpcoming(title) {
+      const cleaned = title.trim();
+      if (!cleaned) return;
+      state.upcoming.unshift({ id: uid('event'), date: '날짜 정하기', title: cleaned });
+      saveLifeState(state);
+      renderAll();
+    }
+
+    function addDone(title) {
+      const cleaned = title.trim();
+      if (!cleaned) return;
+      state.doneToday.unshift({ id: uid('done'), title: cleaned });
+      saveLifeState(state);
+      renderAll();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    document.getElementById('quickForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const input = document.getElementById('quickInput');
+      addInbox(input.value);
+      input.value = '';
+    });
+
+    document.body.addEventListener('click', (event) => {
+      const tabButton = event.target.closest('[data-tab]');
+      if (tabButton) {
+        document.querySelectorAll('.nav-btn').forEach((button) => button.classList.toggle('active', button === tabButton));
+        document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.remove('active'));
+        document.getElementById(`panel-${tabButton.dataset.tab}`).classList.add('active');
+      }
+
+      const taskButton = event.target.closest('[data-toggle-task]');
+      if (taskButton) {
+        const task = state.tasks.find((item) => item.id === taskButton.dataset.toggleTask);
+        if (task) {
+          task.done = !task.done;
+          saveLifeState(state);
+          renderAll();
+        }
+      }
+
+      const inboxButton = event.target.closest('[data-promote-inbox]');
+      if (inboxButton) {
+        const index = state.inbox.findIndex((item) => item.id === inboxButton.dataset.promoteInbox);
+        if (index >= 0) {
+          const [item] = state.inbox.splice(index, 1);
+          state.tasks.unshift({ id: uid('task'), title: item.title, done: false });
+          saveLifeState(state);
+          renderAll();
+        }
+      }
+
+      const addButton = event.target.closest('[data-open-add]');
+      if (addButton) {
+        const title = prompt('무엇을 추가할까?');
+        if (title && addButton.dataset.openAdd === 'task') addTask(title);
+        if (title && addButton.dataset.openAdd === 'upcoming') addUpcoming(title);
+        if (title && addButton.dataset.openAdd === 'done') addDone(title);
+      }
+    });
+
+    document.getElementById('reviewInput').addEventListener('input', (event) => {
+      state.review = event.target.value;
+      saveLifeState(state);
+      document.getElementById('dailyPhrase').textContent = state.review;
+      const saved = document.getElementById('reviewSaved');
+      saved.textContent = '저장됨';
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `my-life-os-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('importFile').addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        const imported = JSON.parse(await file.text());
+        state = { ...cloneDefaultState(), ...imported };
+        saveLifeState(state);
+        renderAll();
+      } catch (error) {
+        alert('JSON 파일을 읽지 못했어.');
+      } finally {
+        event.target.value = '';
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('이 기기의 Life OS 데이터를 초기화할까?')) return;
+      state = cloneDefaultState();
+      saveLifeState(state);
+      renderAll();
+    });
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      installPrompt = event;
+    });
+
+    document.getElementById('installBtn').addEventListener('click', async () => {
+      if (!installPrompt) {
+        alert('브라우저 메뉴에서 홈 화면에 추가를 선택하면 앱처럼 열 수 있어.');
+        return;
+      }
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+      installPrompt = null;
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
